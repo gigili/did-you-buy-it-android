@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "Did You Buy It"
