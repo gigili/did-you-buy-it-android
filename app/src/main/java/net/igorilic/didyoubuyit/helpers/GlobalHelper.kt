@@ -6,7 +6,8 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
-import org.json.JSONObject
+import net.igorilic.didyoubuyit.models.TokenModel
+import net.igorilic.didyoubuyit.models.UserModel
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -129,8 +130,9 @@ open class GlobalHelper constructor(private var context: Context) {
         return convertToHex(shaHash).removePrefix("0");
     }
 
-    fun setSessionData(user: JSONObject, tokenData: JSONObject) {
-        TODO("Not yet implemented")
+    fun setSessionData(user: UserModel, tokenData: TokenModel) {
+        //TODO("Not yet implemented")
+        logMsg("[INFO] $user")
     }
 
     companion object {

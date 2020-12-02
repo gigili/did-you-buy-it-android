@@ -7,8 +7,9 @@ import com.android.volley.Request
 import kotlinx.android.synthetic.main.activity_login.*
 import net.igorilic.didyoubuyit.helpers.AppInstance
 import net.igorilic.didyoubuyit.helpers.GlobalHelper
+import net.igorilic.didyoubuyit.models.TokenModel
+import net.igorilic.didyoubuyit.models.UserModel
 import org.json.JSONObject
-import java.lang.Exception
 
 
 class LoginActivity : AppCompatActivity() {
@@ -61,31 +62,41 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val res = JSONObject(response)
 
-                if(!res.getBoolean("success")){
+                if (!res.getBoolean("success")) {
                     globalHelper.showMessageDialog(getString(R.string.error_login_failed))
                     return@callAPI
                 }
 
                 val data = res.getJSONObject("data");
                 AppInstance.globalHelper.setSessionData(
-                    data.getJSONObject("user"),
-                    data.getJSONObject("token")
+                    AppInstance.gson.fromJson(
+                        data.getJSONObject("user").toString(),
+                        UserModel::class.java
+                    ),
+                    AppInstance.gson.fromJson(
+                        data.getJSONObject("token").toString(),
+                        TokenModel::class.java
+                    )
                 )
 
                 //TODO: Open the main activity here...
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 AppInstance.globalHelper.logMsg("[ERROR][LOGIN] Exception: ${e.message}")
             }
         }, { error ->
             val data = JSONObject(String(error.networkResponse.data))
             val errorObject = data.optJSONObject("error")
-            val errorMessage = if(errorObject != null){
+            val errorMessage = if (errorObject != null) {
                 errorObject.optString("message");
-            }else{
+            } else {
                 getString(R.string.error_login_failed)
             }
 
-            AppInstance.globalHelper.logMsg("[ERROR][LOGIN] Error: ${data.getJSONObject("error").optString("message")}")
+            AppInstance.globalHelper.logMsg(
+                "[ERROR][LOGIN] Error: ${
+                    data.getJSONObject("error").optString("message")
+                }"
+            )
             globalHelper.showMessageDialog(errorMessage)
         },
             Request.Method.POST

@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
 import org.json.JSONObject
 
 @Suppress("PrivatePropertyName")
@@ -78,11 +79,13 @@ class AppInstance : Application() {
         private var mAppContext: Context? = null
         lateinit var globalHelper: GlobalHelper
         lateinit var app: AppInstance
+        lateinit var gson: Gson
 
         var appContext: Context?
             get() = mAppContext
             set(mAppContext) {
                 AppInstance.mAppContext = mAppContext
+                AppInstance.gson = Gson()
             }
     }
 
