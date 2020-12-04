@@ -4,10 +4,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
-import net.igorilic.didyoubuyit.models.TokenModel
-import net.igorilic.didyoubuyit.models.UserModel
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -130,9 +129,19 @@ open class GlobalHelper constructor(private var context: Context) {
         return convertToHex(shaHash).removePrefix("0");
     }
 
-    fun setSessionData(user: UserModel, tokenData: TokenModel) {
-        //TODO("Not yet implemented")
-        logMsg("[INFO] $user")
+    fun handleNavigationDrawerItemClick(id: Int) {}
+
+    fun handleOptionsMenuClick(id: Int, activity: AppCompatActivity) {
+        when (id) {
+            R.id.action_settings -> {
+                /*if (!context.javaClass.toString().equals("SettingsActivity", ignoreCase = true)) {
+                    context.startActivity(Intent(context, SettingsActivity::class.java))
+                    (context as Activity).finish()
+                }*/
+
+                //TODO Create settings activity
+            }
+        }
     }
 
     companion object {

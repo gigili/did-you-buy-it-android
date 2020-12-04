@@ -2,7 +2,6 @@ package net.igorilic.didyoubuyit.helpers
 
 import android.app.Application
 import android.content.Context
-import android.text.TextUtils
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -16,7 +15,7 @@ import org.json.JSONObject
 class AppInstance : Application() {
 
     private var volleyRequestQueue: RequestQueue? = null
-    private val VOLLEY_DEFAULT_TAG = "dybiVolleyDefaultTag"
+
 
     override fun onCreate() {
         super.onCreate()
@@ -54,8 +53,8 @@ class AppInstance : Application() {
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
 
-        cancelPendingRequests(url)
-        addToRequestQueue(req, url)
+        cancelPendingRequests()
+        addToRequestQueue(req)
     }
 
     private fun getRequestQueue(): RequestQueue? {
@@ -66,16 +65,17 @@ class AppInstance : Application() {
     }
 
 
-    private fun <T> addToRequestQueue(req: Request<T>, tag: String) {
-        req.tag = if (TextUtils.isEmpty(tag)) VOLLEY_DEFAULT_TAG else tag
+    private fun <T> addToRequestQueue(req: Request<T>) {
+        req.tag = VOLLEY_DEFAULT_TAG
         getRequestQueue()?.add(req)
     }
 
-    private fun cancelPendingRequests(tag: String) {
-        getRequestQueue()?.cancelAll(tag)
+    fun cancelPendingRequests() {
+        getRequestQueue()?.cancelAll(VOLLEY_DEFAULT_TAG)
     }
 
     companion object {
+        const val VOLLEY_DEFAULT_TAG = "dybiVolleyDefaultTag"
         private var mAppContext: Context? = null
         lateinit var globalHelper: GlobalHelper
         lateinit var app: AppInstance
@@ -85,7 +85,7 @@ class AppInstance : Application() {
             get() = mAppContext
             set(mAppContext) {
                 AppInstance.mAppContext = mAppContext
-                AppInstance.gson = Gson()
+                gson = Gson()
             }
     }
 

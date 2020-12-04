@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
             edtPassword.error = getString(R.string.error_empty_password)
             return
         } else if (password.length < 6) {
-            edtPassword.error = getString(R.string.error_password_length)
+            edtPassword.error = getString(R.string.error_min_password_length)
             return
         }
 
@@ -61,7 +61,6 @@ class LoginActivity : AppCompatActivity() {
         ProgressDialogHelper.showProgressDialog(this@LoginActivity)
 
         AppInstance.app.callAPI("/login", params, { response ->
-            //AppInstance.globalHelper.logMsg("[INFO][LOGIN] $response")
             try {
                 val res = JSONObject(response)
 
@@ -71,18 +70,18 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 val data = res.getJSONObject("data");
-                AppInstance.globalHelper.setSessionData(
-                    AppInstance.gson.fromJson(
-                        data.getJSONObject("user").toString(),
-                        UserModel::class.java
-                    ),
-                    AppInstance.gson.fromJson(
-                        data.getJSONObject("token").toString(),
-                        TokenModel::class.java
-                    )
+                val userModel = AppInstance.gson.fromJson(
+                    data.getJSONObject("user").toString(),
+                    UserModel::class.java
                 )
 
-                //TODO: Open the main activity here...
+                val tokenModel = AppInstance.gson.fromJson(
+                    data.getJSONObject("token").toString(),
+                    TokenModel::class.java
+                )
+
+                userModel.saveToSession()
+                tokenModel.saveToSession()
             } catch (e: Exception) {
                 AppInstance.globalHelper.logMsg("[ERROR][LOGIN] Exception: ${e.message}")
             } finally {
