@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,18 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             login()
         }
+
+        checkLoginState()
+    }
+
+    private fun checkLoginState() {
+        val now = System.currentTimeMillis() / 1000
+        val tokenTime = AppInstance.globalHelper.getLongPref("token_expires")
+
+        if (tokenTime == -1L) return //Token expiry time not set
+        if (tokenTime < now) return //Token has expired
+
+        openMainActivity()
     }
 
     private fun login() {
@@ -63,8 +76,8 @@ class LoginActivity : AppCompatActivity() {
         AppInstance.app.callAPI("/login", params, { response ->
             try {
                 val res = JSONObject(response)
-
                 if (!res.getBoolean("success")) {
+                    AppInstance.globalHelper.logMsg("[INFO][LoginActivity] $response")
                     globalHelper.showMessageDialog(getString(R.string.error_login_failed))
                     return@callAPI
                 }
@@ -82,6 +95,8 @@ class LoginActivity : AppCompatActivity() {
 
                 userModel.saveToSession()
                 tokenModel.saveToSession()
+
+                openMainActivity()
             } catch (e: Exception) {
                 AppInstance.globalHelper.logMsg("[ERROR][LOGIN] Exception: ${e.message}")
             } finally {
@@ -103,10 +118,17 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 errorMessage = getString(R.string.error_login_failed)
             }
+            error.printStackTrace()
 
             globalHelper.showMessageDialog(errorMessage)
         },
             Request.Method.POST
         )
+    }
+
+    private fun openMainActivity() {
+        val intentMainActivity = Intent(this@LoginActivity, MainActivity::class.java)
+        startActivity(intentMainActivity)
+        finish()
     }
 }

@@ -17,6 +17,6 @@ data class TokenModel(
     fun saveToSession() {
         AppInstance.globalHelper.setStringPref("access_token", accessToken)
         AppInstance.globalHelper.setStringPref("refresh_token", refreshToken)
-        AppInstance.globalHelper.setLongPref("token_lifespan", expires)
+        AppInstance.globalHelper.setLongPref("token_expires", expires)
     }
 }

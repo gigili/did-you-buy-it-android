@@ -1,10 +1,20 @@
 package net.igorilic.didyoubuyit.helpers
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.navigation.NavigationView
 import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
 import java.io.UnsupportedEncodingException
@@ -15,6 +25,7 @@ import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
 
+
 open class GlobalHelper constructor(private var context: Context) {
     private val preferences: SharedPreferences
     private val preferencesEditor: SharedPreferences.Editor
@@ -22,6 +33,9 @@ open class GlobalHelper constructor(private var context: Context) {
     init {
         preferences = context.getSharedPreferences(PREFERENCE_TAG, 0)
         preferencesEditor = preferences.edit()
+
+        if (getStringPref("API_URL").isEmpty())
+            setStringPref("API_URL", API_URL)
     }
 
     fun getPreferences(): SharedPreferences {
@@ -129,7 +143,42 @@ open class GlobalHelper constructor(private var context: Context) {
         return convertToHex(shaHash).removePrefix("0");
     }
 
-    fun handleNavigationDrawerItemClick(id: Int) {}
+    private fun handleNavigationDrawerItemClick(id: Int) {
+        when (id) {
+            R.id.nav_exit -> {
+                this.quitApp(false)
+            }
+        }
+    }
+
+    fun quitApp(clearSession: Boolean = false) {
+        val dl = AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.confirm_quit_app))
+            .setMessage(context.getString(R.string.confirm_quit_app_message))
+            .setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
+                if (clearSession) {
+                    unsetSessionData()
+                }
+                dialog.cancel()
+                (context as Activity).finish()
+            }
+            .setNegativeButton(context.getString(R.string.no)) { dialog, _ -> dialog.cancel() }
+            .create()
+
+        dl.show()
+    }
+
+    private fun unsetSessionData() {
+        setIntPref("user_id", -1)
+        setStringPref("user_name", "")
+        setStringPref("user_username", "")
+        setStringPref("user_email", "")
+        setStringPref("user_image", "")
+
+        setStringPref("access_token", "")
+        setStringPref("refresh_token", "")
+        setLongPref("token_expires", -1L)
+    }
 
     fun handleOptionsMenuClick(id: Int, activity: AppCompatActivity) {
         when (id) {
@@ -144,10 +193,54 @@ open class GlobalHelper constructor(private var context: Context) {
         }
     }
 
+    fun setupDrawerLayout(toolbar: Toolbar) {
+        val drawerLayout: DrawerLayout = (context as Activity).findViewById(R.id.drawer_layout)
+        val navView: NavigationView = (context as Activity).findViewById(R.id.nav_view)
+
+        navView.setNavigationItemSelectedListener {
+            handleNavigationDrawerItemClick(it.itemId)
+            true
+        }
+
+        val imgProfileImage =
+            navView.getHeaderView(0).findViewById<ImageView>(R.id.imgSidebarProfileImage)
+        val lblUserFullName =
+            navView.getHeaderView(0).findViewById<TextView>(R.id.lblSidebarUserFullName)
+        val lblUserEmail = navView.getHeaderView(0).findViewById<TextView>(R.id.lblSidebarUserEmail)
+
+        lblUserFullName.text = getStringPref("user_name")
+        lblUserEmail.text = getStringPref("user_email")
+        val userImage = getStringPref("user_image")
+
+        if (userImage.isNotEmpty()) {
+            val imageUrl = "${getStringPref("API_URL")}/$PROFILE_IMAGE_PATH/$userImage"
+            Glide.with(context)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(imgProfileImage)
+            imgProfileImage.clipToOutline = true
+        }
+
+        val toggle = ActionBarDrawerToggle(
+            (context as Activity),
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        toggle.drawerArrowDrawable.color =
+            ContextCompat.getColor((context as Activity).baseContext, R.color.colorIconPrimary)
+    }
+
     companion object {
-        var API_URL = "http://192.168.0.13:3030"
+        var API_URL = "http://192.168.0.14:3030"
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
+        var PROFILE_IMAGE_PATH = "images/user"
         private var PREFERENCE_TAG = "DidYouBuyItPreference"
 
         fun convertToHex(data: ByteArray): String {

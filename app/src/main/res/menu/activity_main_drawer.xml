@@ -6,7 +6,14 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_list"
             android:title="@string/menu_home" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/menu_exit" />
     </group>
 </menu>

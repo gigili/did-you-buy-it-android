@@ -31,7 +31,7 @@ class AppInstance : Application() {
         errorListener: Response.ErrorListener,
         method: Int,
     ) {
-        val url = "${GlobalHelper.API_URL}$operationPath"
+        val url = "${globalHelper.getStringPref("API_URL")}$operationPath"
 
         val req: StringRequest
 
@@ -42,6 +42,7 @@ class AppInstance : Application() {
                 header["Content-Type"] = "application/json"
                 return header
             }
+
             override fun getBody(): ByteArray {
                 return params?.toString()?.toByteArray() ?: ByteArray(0)
             }

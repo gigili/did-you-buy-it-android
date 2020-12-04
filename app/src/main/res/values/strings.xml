@@ -18,4 +18,11 @@
     <string name="menu_home">Home</string>
     <string name="alt_user_profile_image">Profile image</string>
     <string name="alt_create_new_list">Create new list</string>
+    <string name="action_logout">Log out</string>
+    <string name="menu_exit">Exit</string>
+    <string name="error_failed_to_load_image">Failed to load image</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm_quit_app">Exit application?</string>
+    <string name="confirm_quit_app_message">Are you sure you want to exit the application?</string>
 </resources>
