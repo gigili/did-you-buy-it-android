@@ -12,16 +12,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.android.volley.VolleyError
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.navigation.NavigationView
 import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
+import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Callable
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -92,13 +95,19 @@ open class GlobalHelper constructor(private var context: Context) {
         }
     }
 
-    fun showMessageDialog(msg: String, title: String = "") {
+    fun showMessageDialog(msg: String, title: String = "", callback: Callable<Void>? = null) {
         try {
             val mTitle = if (title.isNotEmpty()) title else context.getString(R.string.warning)
             val dl = AlertDialog.Builder(context)
                 .setTitle(mTitle)
                 .setMessage(msg)
-                .setPositiveButton(context.getString(R.string.ok)) { dl, _ -> dl.dismiss() }
+                .setPositiveButton(context.getString(R.string.ok)) { dl, _ ->
+                    dl.dismiss()
+
+                    if (callback !== null) {
+                        callback.call()
+                    }
+                }
                 .create()
             //.show()
 
@@ -236,11 +245,38 @@ open class GlobalHelper constructor(private var context: Context) {
             ContextCompat.getColor((context as Activity).baseContext, R.color.colorIconPrimary)
     }
 
+    fun parseErrorNetworkResponse(
+        error: VolleyError,
+        defaultErrorMessage: String = "",
+        activity: String = ""
+    ): String {
+        var errorMessage = ""
+        if (error.networkResponse !== null && error.networkResponse.data !== null) {
+            val data = JSONObject(String(error.networkResponse.data))
+            val errorObject = data.getJSONObject("error")
+            errorMessage = errorObject.getString("message")
+
+            val activityTag = if (activity.isNotEmpty()) "[$activity]" else ""
+            AppInstance.globalHelper.logMsg(
+                "[ERROR]$activityTag Error: ${
+                    data.getJSONObject("error").optString("message")
+                }"
+            )
+        } else {
+            errorMessage = defaultErrorMessage
+        }
+        error.printStackTrace()
+
+        return errorMessage
+    }
+
     companion object {
         var API_URL = "http://192.168.0.14:3030"
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
         var PROFILE_IMAGE_PATH = "images/user"
+        val EMAIL_PATTERN =
+            Regex("^(([a-zA-Z0-9_\\-]+(\\.[a-zA-Z0-9_\\-]+)*)|(\\\".+\\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$")
         private var PREFERENCE_TAG = "DidYouBuyItPreference"
 
         fun convertToHex(data: ByteArray): String {

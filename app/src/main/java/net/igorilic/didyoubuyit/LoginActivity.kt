@@ -36,6 +36,11 @@ class LoginActivity : AppCompatActivity() {
             login()
         }
 
+        btnRegister.setOnClickListener {
+            val intentRegisterActivity = Intent(this@LoginActivity, RegisterActivity::class.java)
+            startActivity(intentRegisterActivity)
+        }
+
         checkLoginState()
     }
 
@@ -104,23 +109,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }, { error ->
             ProgressDialogHelper.hideProgressDialog()
-            var errorMessage = ""
-            if (error.networkResponse !== null && error.networkResponse.data !== null) {
-                val data = JSONObject(String(error.networkResponse.data))
-                val errorObject = data.getJSONObject("error")
-                errorMessage = errorObject.getString("message")
-
-                AppInstance.globalHelper.logMsg(
-                    "[ERROR][LOGIN] Error: ${
-                        data.getJSONObject("error").optString("message")
-                    }"
+            globalHelper.showMessageDialog(
+                globalHelper.parseErrorNetworkResponse(
+                    error,
+                    getString(R.string.error_login_failed),
+                    "LoginActivity"
                 )
-            } else {
-                errorMessage = getString(R.string.error_login_failed)
-            }
-            error.printStackTrace()
-
-            globalHelper.showMessageDialog(errorMessage)
+            )
         },
             Request.Method.POST
         )

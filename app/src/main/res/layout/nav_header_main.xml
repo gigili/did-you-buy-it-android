@@ -17,6 +17,7 @@
         android:layout_height="80dp"
         android:contentDescription="@string/alt_user_profile_image"
         android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher_round"
         android:background="@drawable/circular" />
 
     <TextView
