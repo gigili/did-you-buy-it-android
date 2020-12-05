@@ -5,9 +5,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import net.igorilic.didyoubuyit.databinding.ActivityRegisterBinding
-import net.igorilic.didyoubuyit.helpers.AppInstance
-import net.igorilic.didyoubuyit.helpers.GlobalHelper
-import net.igorilic.didyoubuyit.helpers.ProgressDialogHelper
+import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import org.json.JSONObject
 
 class RegisterActivity : AppCompatActivity() {

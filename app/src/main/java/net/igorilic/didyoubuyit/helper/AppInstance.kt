@@ -1,4 +1,4 @@
-package net.igorilic.didyoubuyit.helpers
+package net.igorilic.didyoubuyit.helper
 
 import android.app.Application
 import android.content.Context
@@ -9,6 +9,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import net.igorilic.didyoubuyit.db.RoomDB
 import org.json.JSONObject
 
 @Suppress("PrivatePropertyName")
@@ -16,12 +19,11 @@ class AppInstance : Application() {
 
     private var volleyRequestQueue: RequestQueue? = null
 
-
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
         app = this
-        globalHelper = GlobalHelper(applicationContext)
+        globalHelper = GlobalHelper(this@AppInstance)
     }
 
     fun callAPI(
@@ -76,17 +78,19 @@ class AppInstance : Application() {
     }
 
     companion object {
+        private val applicationScope = CoroutineScope(SupervisorJob())
         const val VOLLEY_DEFAULT_TAG = "dybiVolleyDefaultTag"
         private var mAppContext: Context? = null
         lateinit var globalHelper: GlobalHelper
         lateinit var app: AppInstance
-        lateinit var gson: Gson
+        val gson by lazy { Gson() }
+        lateinit var db: RoomDB
 
         var appContext: Context?
             get() = mAppContext
             set(mAppContext) {
                 AppInstance.mAppContext = mAppContext
-                gson = Gson()
+                db = RoomDB.getDatabase(mAppContext!!, applicationScope)
             }
     }
 

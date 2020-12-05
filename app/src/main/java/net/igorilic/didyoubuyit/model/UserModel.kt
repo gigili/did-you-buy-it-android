@@ -1,7 +1,7 @@
-package net.igorilic.didyoubuyit.models
+package net.igorilic.didyoubuyit.model
 
 import com.google.gson.annotations.SerializedName
-import net.igorilic.didyoubuyit.helpers.AppInstance
+import net.igorilic.didyoubuyit.helper.AppInstance
 
 data class UserModel(
 

@@ -1,4 +1,4 @@
-package net.igorilic.didyoubuyit.helpers
+package net.igorilic.didyoubuyit.helper
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -189,7 +188,7 @@ open class GlobalHelper constructor(private var context: Context) {
         setLongPref("token_expires", -1L)
     }
 
-    fun handleOptionsMenuClick(id: Int, activity: AppCompatActivity) {
+    fun handleOptionsMenuClick(id: Int) {
         when (id) {
             R.id.action_settings -> {
                 /*if (!context.javaClass.toString().equals("SettingsActivity", ignoreCase = true)) {
@@ -254,7 +253,7 @@ open class GlobalHelper constructor(private var context: Context) {
         defaultErrorMessage: String = "",
         activity: String = ""
     ): String {
-        var errorMessage = ""
+        val errorMessage: String
         if (error.networkResponse !== null && error.networkResponse.data !== null) {
             val data = JSONObject(String(error.networkResponse.data))
             val errorObject = data.getJSONObject("error")

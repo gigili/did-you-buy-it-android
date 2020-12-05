@@ -6,11 +6,11 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import net.igorilic.didyoubuyit.databinding.ActivityLoginBinding
-import net.igorilic.didyoubuyit.helpers.AppInstance
-import net.igorilic.didyoubuyit.helpers.GlobalHelper
-import net.igorilic.didyoubuyit.helpers.ProgressDialogHelper
-import net.igorilic.didyoubuyit.models.TokenModel
-import net.igorilic.didyoubuyit.models.UserModel
+import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
+import net.igorilic.didyoubuyit.model.TokenModel
+import net.igorilic.didyoubuyit.model.UserModel
 import org.json.JSONObject
 
 
