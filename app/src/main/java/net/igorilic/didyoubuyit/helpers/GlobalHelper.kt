@@ -199,6 +199,10 @@ open class GlobalHelper constructor(private var context: Context) {
 
                 //TODO Create settings activity
             }
+
+            R.id.action_logout -> {
+                quitApp(true)
+            }
         }
     }
 

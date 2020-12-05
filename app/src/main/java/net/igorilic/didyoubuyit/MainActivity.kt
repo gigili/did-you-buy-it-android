@@ -7,17 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import net.igorilic.didyoubuyit.databinding.ActivityMainBinding
 import net.igorilic.didyoubuyit.helpers.AppInstance
 import net.igorilic.didyoubuyit.helpers.GlobalHelper
 import net.igorilic.didyoubuyit.helpers.ProgressDialogHelper
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var mainBinding: ActivityMainBinding
     private lateinit var globalHelper: GlobalHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)

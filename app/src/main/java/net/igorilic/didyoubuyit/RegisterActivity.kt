@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
-import kotlinx.android.synthetic.main.activity_register.*
+import net.igorilic.didyoubuyit.databinding.ActivityRegisterBinding
 import net.igorilic.didyoubuyit.helpers.AppInstance
 import net.igorilic.didyoubuyit.helpers.GlobalHelper
 import net.igorilic.didyoubuyit.helpers.ProgressDialogHelper
@@ -12,59 +12,61 @@ import org.json.JSONObject
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var globalHelper: GlobalHelper
+    private lateinit var registerBinding: ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        registerBinding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(registerBinding.root)
 
         globalHelper = GlobalHelper(this@RegisterActivity)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        btnRegister.setOnClickListener {
+        registerBinding.btnRegister.setOnClickListener {
             register()
         }
     }
 
     private fun register() {
-        val name = edtName.text.toString()
-        val email = edtEmail.text.toString()
-        val username = edtUsername.text.toString()
-        val password = edtPassword.text.toString()
+        val name = registerBinding.edtName.text.toString()
+        val email = registerBinding.edtEmail.text.toString()
+        val username = registerBinding.edtUsername.text.toString()
+        val password = registerBinding.edtPassword.text.toString()
 
         //<editor-fold desc="Form validation logic">
         if (name.isEmpty()) {
-            edtName.error = getString(R.string.error_empty_name)
+            registerBinding.edtName.error = getString(R.string.error_empty_name)
             return
         }
 
         if (email.isEmpty()) {
-            edtEmail.error = getString(R.string.error_empty_email)
+            registerBinding.edtEmail.error = getString(R.string.error_empty_email)
             return
         }
 
         if (!email.trim().matches(GlobalHelper.EMAIL_PATTERN)) {
-            edtEmail.error = getString(R.string.error_invalid_email)
+            registerBinding.edtEmail.error = getString(R.string.error_invalid_email)
             return
         }
 
         if (username.isEmpty()) {
-            edtUsername.error = getString(R.string.error_empty_username)
+            registerBinding.edtUsername.error = getString(R.string.error_empty_username)
             return
         }
 
         if (username.trim().length < 3) {
-            edtUsername.error = getString(R.string.error_min_username_length)
+            registerBinding.edtUsername.error = getString(R.string.error_min_username_length)
             return
         }
 
         if (password.isEmpty()) {
-            edtPassword.error = getString(R.string.error_empty_password)
+            registerBinding.edtPassword.error = getString(R.string.error_empty_password)
             return
         }
 
         if (password.trim().length < 6) {
-            edtPassword.error = getString(R.string.error_min_password_length)
+            registerBinding.edtPassword.error = getString(R.string.error_min_password_length)
             return
         }
         //</editor-fold>
@@ -81,10 +83,10 @@ class RegisterActivity : AppCompatActivity() {
                 val res = JSONObject(response)
                 if (res.getBoolean("success")) {
 
-                    edtName.setText("")
-                    edtEmail.setText("")
-                    edtUsername.setText("")
-                    edtPassword.setText("")
+                    registerBinding.edtName.setText("")
+                    registerBinding.edtEmail.setText("")
+                    registerBinding.edtUsername.setText("")
+                    registerBinding.edtPassword.setText("")
 
                     globalHelper.showMessageDialog(
                         getString(R.string.sign_up_success),

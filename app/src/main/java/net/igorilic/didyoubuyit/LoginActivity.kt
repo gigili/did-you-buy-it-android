@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
-import kotlinx.android.synthetic.main.activity_login.*
+import net.igorilic.didyoubuyit.databinding.ActivityLoginBinding
 import net.igorilic.didyoubuyit.helpers.AppInstance
 import net.igorilic.didyoubuyit.helpers.GlobalHelper
 import net.igorilic.didyoubuyit.helpers.ProgressDialogHelper
@@ -16,12 +16,15 @@ import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var loginBinding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        loginBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(loginBinding.root)
 
-        edtPassword.apply {
+        loginBinding.edtPassword.apply {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
@@ -32,11 +35,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        btnLogin.setOnClickListener {
+        loginBinding.btnLogin.setOnClickListener {
             login()
         }
 
-        btnRegister.setOnClickListener {
+        loginBinding.btnRegister.setOnClickListener {
             val intentRegisterActivity = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intentRegisterActivity)
         }
@@ -56,23 +59,23 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         val globalHelper = GlobalHelper(this@LoginActivity)
-        val username = edtUsername.text.toString()
-        val password = edtPassword.text.toString()
+        val username = loginBinding.edtUsername.text.toString()
+        val password = loginBinding.edtPassword.text.toString()
 
         if (username.isEmpty()) {
-            edtUsername.error = getString(R.string.error_empty_username)
+            loginBinding.edtUsername.error = getString(R.string.error_empty_username)
             return
         }
 
         if (password.isEmpty()) {
-            edtPassword.error = getString(R.string.error_empty_password)
+            loginBinding.edtPassword.error = getString(R.string.error_empty_password)
             return
         } else if (password.length < 6) {
-            edtPassword.error = getString(R.string.error_min_password_length)
+            loginBinding.edtPassword.error = getString(R.string.error_min_password_length)
             return
         }
 
-        val params = JSONObject();
+        val params = JSONObject()
         params.put("username", username)
         params.put("password", AppInstance.globalHelper.makeHash(password))
 
@@ -87,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
                     return@callAPI
                 }
 
-                val data = res.getJSONObject("data");
+                val data = res.getJSONObject("data")
                 val userModel = AppInstance.gson.fromJson(
                     data.getJSONObject("user").toString(),
                     UserModel::class.java
