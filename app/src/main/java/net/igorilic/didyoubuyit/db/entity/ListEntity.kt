@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "list")
-class ListEntity(
+data class ListEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Int,

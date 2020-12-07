@@ -7,7 +7,7 @@ import net.igorilic.didyoubuyit.db.entity.ListEntity
 @Dao
 interface ListDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(list: ListEntity)
 
     @Update()

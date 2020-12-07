@@ -32,6 +32,7 @@ class AppInstance : Application() {
         successListener: Response.Listener<String>,
         errorListener: Response.ErrorListener,
         method: Int,
+        protectedRoute: Boolean = false
     ) {
         val url = "${globalHelper.getStringPref("API_URL")}$operationPath"
 
@@ -42,6 +43,10 @@ class AppInstance : Application() {
             override fun getHeaders(): MutableMap<String, String> {
                 val header = HashMap<String, String>()
                 header["Content-Type"] = "application/json"
+                if (protectedRoute) {
+                    val token = globalHelper.getStringPref("access_token")
+                    header["Authorization"] = "Bearer: $token"
+                }
                 return header
             }
 

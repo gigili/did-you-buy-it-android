@@ -35,4 +35,6 @@
     <string name="error_sign_up_failed">Sign up failed</string>
     <string name="sign_up_success">You have created your account successfully. Please check your email to confirm your account.</string>
     <string name="sign_up_success_title">Sign up successful</string>
+    <string name="title_list_list">Lists</string>
+    <string name="title_list_detail">List Detail</string>
 </resources>
