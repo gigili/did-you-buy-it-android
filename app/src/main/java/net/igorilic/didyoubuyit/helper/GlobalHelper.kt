@@ -1,5 +1,8 @@
+@file:Suppress("unused")
+
 package net.igorilic.didyoubuyit.helper
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -28,6 +31,7 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 
+@SuppressLint("CommitPrefEdits")
 open class GlobalHelper constructor(private var context: Context) {
     private val preferences: SharedPreferences
     private val preferencesEditor: SharedPreferences.Editor
@@ -148,7 +152,7 @@ open class GlobalHelper constructor(private var context: Context) {
         val textBytes = text.toByteArray(charset("UTF-8"))
         md.update(textBytes, 0, textBytes.size)
         val shaHash = md.digest()
-        return convertToHex(shaHash).removePrefix("0");
+        return convertToHex(shaHash).removePrefix("0")
     }
 
     private fun handleNavigationDrawerItemClick(id: Int) {
@@ -274,12 +278,12 @@ open class GlobalHelper constructor(private var context: Context) {
     }
 
     companion object {
-        var API_URL = "http://192.168.0.14:3030"
+        var API_URL = "http://192.168.0.7:3030"
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
         var PROFILE_IMAGE_PATH = "images/user"
         val EMAIL_PATTERN =
-            Regex("^(([a-zA-Z0-9_\\-]+(\\.[a-zA-Z0-9_\\-]+)*)|(\\\".+\\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$")
+            Regex("^(([a-zA-Z0-9_\\-]+(\\.[a-zA-Z0-9_\\-]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$")
         private var PREFERENCE_TAG = "DidYouBuyItPreference"
 
         fun convertToHex(data: ByteArray): String {

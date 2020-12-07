@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        globalHelper.handleOptionsMenuClick(item.itemId, this)
+        globalHelper.handleOptionsMenuClick(item.itemId)
         return super.onOptionsItemSelected(item)
     }
 
