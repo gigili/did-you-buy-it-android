@@ -11,7 +11,6 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import net.igorilic.didyoubuyit.db.RoomDB
 import org.json.JSONObject
 
 @Suppress("PrivatePropertyName")
@@ -89,13 +88,13 @@ class AppInstance : Application() {
         lateinit var globalHelper: GlobalHelper
         lateinit var app: AppInstance
         val gson by lazy { Gson() }
-        lateinit var db: RoomDB
+        //lateinit var db: RoomDB
 
         var appContext: Context?
             get() = mAppContext
             set(mAppContext) {
                 AppInstance.mAppContext = mAppContext
-                db = RoomDB.getDatabase(mAppContext!!, applicationScope)
+                //db = RoomDB.getDatabase(mAppContext!!, applicationScope)
             }
     }
 

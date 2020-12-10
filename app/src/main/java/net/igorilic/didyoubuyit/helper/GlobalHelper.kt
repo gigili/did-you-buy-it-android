@@ -40,8 +40,13 @@ open class GlobalHelper constructor(private var context: Context) {
         preferences = context.getSharedPreferences(PREFERENCE_TAG, 0)
         preferencesEditor = preferences.edit()
 
-        if (getStringPref("API_URL").isEmpty())
+        if (getStringPref("API_URL").isEmpty()) {
             setStringPref("API_URL", API_URL)
+        }
+
+        if (getStringPref("default_date_format").isEmpty()) {
+            setStringPref("default_date_format", "dd.MM.yyyy")
+        }
     }
 
     fun getPreferences(): SharedPreferences {
@@ -126,16 +131,21 @@ open class GlobalHelper constructor(private var context: Context) {
 
     fun formatDate(
         lastUpdate: String,
-        dateFormat: String,
-        inputFormat: String = "yyyy-MM-dd HH:mm:ss",
+        inputDateFormat: String = "yyyy-MM-dd HH:mm:ss",
+        outputDateFormat: String = "",
         timeZone: TimeZone? = TimeZone.getTimeZone("Europe/Belgrade")
     ): String {
         try {
-            var format = SimpleDateFormat(inputFormat, DEFAULT_APP_LOCALE)
+            var format = SimpleDateFormat(inputDateFormat, DEFAULT_APP_LOCALE)
             format.timeZone = TimeZone.getTimeZone("UTC")
             val newDate = format.parse(lastUpdate)
 
-            format = SimpleDateFormat(dateFormat, DEFAULT_APP_LOCALE)
+            val newDateFormat = if (outputDateFormat.isEmpty())
+                getStringPref("default_date_format")
+            else
+                outputDateFormat
+
+            format = SimpleDateFormat(newDateFormat, DEFAULT_APP_LOCALE)
             if (timeZone != null)
                 format.timeZone = timeZone
 

@@ -35,6 +35,7 @@
     <string name="error_sign_up_failed">Sign up failed</string>
     <string name="sign_up_success">You have created your account successfully. Please check your email to confirm your account.</string>
     <string name="sign_up_success_title">Sign up successful</string>
-    <string name="title_list_list">Lists</string>
-    <string name="title_list_detail">List Detail</string>
+    <string name="error_list_loading_failed">Failed to load lists</string>
+    <string name="lbl_list_items_count">Items: %1$d / %2$d</string>
+    <string name="lbl_list_users_count">Users: %1$d</string>
 </resources>
