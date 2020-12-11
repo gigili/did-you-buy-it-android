@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bn_nav_items"
+        android:icon="@drawable/ic_list_items"
+        android:title="@string/lbl_list_items" />
+
+    <item
+        android:id="@+id/bn_nav_users"
+        android:icon="@drawable/ic_users"
+        android:title="@string/lbl_list_users" />
+</menu>

@@ -17,6 +17,10 @@
         android:theme="@style/Theme.DidYouBuyIt"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".list.ListActivity"
+
+            android:label="@string/title_activity_list" />
+        <activity
             android:name=".RegisterActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity

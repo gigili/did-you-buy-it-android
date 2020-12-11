@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/bn_nav_items">
+
+    <fragment
+        android:id="@+id/bn_nav_items"
+        android:name="net.igorilic.didyoubuyit.list.ui.items.ListItemFragment"
+        tools:layout="@layout/fragment_list_item"
+        android:label="@string/lbl_list_items" />
+
+    <fragment
+        android:id="@+id/bn_nav_users"
+        android:name="net.igorilic.didyoubuyit.list.ui.users.ListUserFragment"
+        android:label="@string/lbl_list_users"
+        tools:layout="@layout/fragment_list_user" />
+</navigation>

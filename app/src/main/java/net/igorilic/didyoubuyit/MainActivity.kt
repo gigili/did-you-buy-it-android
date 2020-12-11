@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import net.igorilic.didyoubuyit.databinding.ActivityMainBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
+import net.igorilic.didyoubuyit.list.ListActivity
 import net.igorilic.didyoubuyit.model.ListModel
 import org.json.JSONObject
 
@@ -41,7 +43,14 @@ class MainActivity : AppCompatActivity() {
         globalHelper.setupDrawerLayout(toolbar)
 
         lstLists = findViewById(R.id.lstLists)
-        listsAdapter = ListsAdapter(this@MainActivity, ArrayList())
+        listsAdapter = ListsAdapter(
+            this@MainActivity,
+            ArrayList(),
+            object : ListsAdapter.OnListItemClickListener {
+                override fun onItemClicked(item: ListModel) {
+                    openListDetails(item)
+                }
+            })
         lstLists.layoutManager = LinearLayoutManager(this@MainActivity)
         lstLists.adapter = listsAdapter
 
@@ -52,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         loadLists()
+    }
+
+    private fun openListDetails(list: ListModel) {
+        val intentListActivity = Intent(this@MainActivity, ListActivity::class.java)
+        intentListActivity.putExtra("list", list.toJSON())
+        startActivity(intentListActivity)
+        //finish()
     }
 
     private fun loadLists() {

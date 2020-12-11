@@ -13,7 +13,8 @@ import net.igorilic.didyoubuyit.model.ListModel
 
 class ListsAdapter(
     private val context: Context,
-    private val items: ArrayList<ListModel>
+    private val items: ArrayList<ListModel>,
+    private val mListItemClickListener: OnListItemClickListener
 ) :
     RecyclerView.Adapter<ListsAdapter.ViewHolder>() {
 
@@ -39,8 +40,6 @@ class ListsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        //mListClickListener = listClickedListener
-
         holder.lblListName.text = item.name
         holder.lblListItemsCount.text = String.format(
             context.resources.getString(R.string.lbl_list_items_count),
@@ -57,9 +56,7 @@ class ListsAdapter(
         )
 
         holder.lytCardList.setOnClickListener {
-            if (mListClickListener != null) {
-                mListClickListener?.onItemClicked(item)
-            }
+            mListItemClickListener.onItemClicked(item)
         }
     }
 
@@ -80,10 +77,6 @@ class ListsAdapter(
     }
 
     private fun getItem(position: Int): ListModel {
-        return items[position];
-    }
-
-    companion object {
-        var mListClickListener: OnListItemClickListener? = null
+        return items[position]
     }
 }

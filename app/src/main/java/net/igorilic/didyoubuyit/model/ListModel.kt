@@ -1,6 +1,7 @@
 package net.igorilic.didyoubuyit.model
 
 import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
 data class ListModel(
 
@@ -24,4 +25,37 @@ data class ListModel(
 
     @field:SerializedName("created_at")
     val createdAt: String? = null
-)
+) {
+    override fun toString(): String {
+        return name ?: ""
+    }
+
+    fun toJSON(): String {
+        if (name.isNullOrEmpty()) return ""
+
+        val json = JSONObject()
+        json.put("id", id)
+        json.put("name", name)
+        json.put("userID", userID)
+        json.put("cntUsers", cntUsers)
+        json.put("cntItems", cntItems)
+        json.put("cntBoughtItems", cntBoughtItems)
+        json.put("createdAt", createdAt)
+
+        return json.toString()
+    }
+
+    companion object {
+        fun fromJSON(obj: JSONObject): ListModel {
+            return ListModel(
+                obj.getInt("id"),
+                obj.getString("name"),
+                obj.getInt("userID"),
+                obj.getInt("cntUsers"),
+                obj.getInt("cntItems"),
+                obj.getInt("cntBoughtItems"),
+                obj.getString("createdAt")
+            )
+        }
+    }
+}
