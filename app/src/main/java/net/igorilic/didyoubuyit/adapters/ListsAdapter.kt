@@ -4,13 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.model.ListModel
 
-class ListsAdapter(private val context: Context, private val items: ArrayList<ListModel>) :
+class ListsAdapter(
+    private val context: Context,
+    private val items: ArrayList<ListModel>
+) :
     RecyclerView.Adapter<ListsAdapter.ViewHolder>() {
 
     interface OnListItemClickListener {
@@ -18,6 +22,7 @@ class ListsAdapter(private val context: Context, private val items: ArrayList<Li
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var lytCardList: LinearLayout = view.findViewById(R.id.lytCardList)
         var lblListName: TextView = view.findViewById(R.id.lblListName)
         var lblListItemsCount: TextView = view.findViewById(R.id.lblListItemsCount)
         var lblListUsersCount: TextView = view.findViewById(R.id.lblListUsersCount)
@@ -27,11 +32,14 @@ class ListsAdapter(private val context: Context, private val items: ArrayList<Li
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.card_list, parent, false)
+
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+
+        //mListClickListener = listClickedListener
 
         holder.lblListName.text = item.name
         holder.lblListItemsCount.text = String.format(
@@ -47,6 +55,12 @@ class ListsAdapter(private val context: Context, private val items: ArrayList<Li
             item.createdAt!!,
             "yyyy-MM-dd'T'HH:mm:ss.S'Z'"
         )
+
+        holder.lytCardList.setOnClickListener {
+            if (mListClickListener != null) {
+                mListClickListener?.onItemClicked(item)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -67,5 +81,9 @@ class ListsAdapter(private val context: Context, private val items: ArrayList<Li
 
     private fun getItem(position: Int): ListModel {
         return items[position];
+    }
+
+    companion object {
+        var mListClickListener: OnListItemClickListener? = null
     }
 }

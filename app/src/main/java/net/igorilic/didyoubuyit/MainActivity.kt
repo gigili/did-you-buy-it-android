@@ -55,9 +55,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadLists() {
-        AppInstance.app.callAPI("/list", null, { it ->
+        AppInstance.app.callAPI("/list", null, {
             try {
                 val res = JSONObject(it)
+
                 //TODO Store lists into DB
 
                 val listsListType = object : TypeToken<ArrayList<ListModel?>?>() {}.type
