@@ -8,4 +8,10 @@
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">200dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="corner_radius_small">5sp</dimen>
+    <dimen name="corner_radius_medium">10sp</dimen>
+    <dimen name="corner_radius_large">20sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
 </resources>

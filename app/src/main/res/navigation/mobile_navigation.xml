@@ -3,16 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/bn_nav_items">
+    app:startDestination="@+id/m_nav_items">
 
     <fragment
-        android:id="@+id/bn_nav_items"
+        android:id="@+id/m_nav_items"
         android:name="net.igorilic.didyoubuyit.list.ui.items.ListItemFragment"
-        tools:layout="@layout/fragment_list_item"
-        android:label="@string/lbl_list_items" />
+        android:label="@string/lbl_list_items"
+        tools:layout="@layout/fragment_list_item">
+        <action
+            android:id="@+id/action_m_nav_items_to_m_nav_users2"
+            app:destination="@id/m_nav_users">
+            <argument
+                android:name="list"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
-        android:id="@+id/bn_nav_users"
+        android:id="@+id/m_nav_users"
         android:name="net.igorilic.didyoubuyit.list.ui.users.ListUserFragment"
         android:label="@string/lbl_list_users"
         tools:layout="@layout/fragment_list_user" />

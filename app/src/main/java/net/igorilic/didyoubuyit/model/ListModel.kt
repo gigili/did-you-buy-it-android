@@ -30,10 +30,11 @@ data class ListModel(
         return name ?: ""
     }
 
-    fun toJSON(): String {
-        if (name.isNullOrEmpty()) return ""
-
+    fun toJSON(): JSONObject {
         val json = JSONObject()
+
+        if (name.isNullOrEmpty()) return json
+
         json.put("id", id)
         json.put("name", name)
         json.put("userID", userID)
@@ -42,7 +43,11 @@ data class ListModel(
         json.put("cntBoughtItems", cntBoughtItems)
         json.put("createdAt", createdAt)
 
-        return json.toString()
+        return json
+    }
+
+    fun toJSONString(): String {
+        return toJSON().toString()
     }
 
     companion object {

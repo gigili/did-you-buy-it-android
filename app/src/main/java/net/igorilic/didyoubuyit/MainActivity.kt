@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openListDetails(list: ListModel) {
         val intentListActivity = Intent(this@MainActivity, ListActivity::class.java)
-        intentListActivity.putExtra("list", list.toJSON())
+        intentListActivity.putExtra("list", list.toJSONString())
         startActivity(intentListActivity)
         //finish()
     }

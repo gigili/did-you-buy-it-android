@@ -46,4 +46,8 @@
     <string name="lbl_list_items">Items</string>
     <string name="lbl_list_users">Users</string>
     <string name="error_list_not_found">List not found</string>
+    <string name="error_list_item_loading_failed">Failed to load list items</string>
+    <string name="list_item_image">Image for the list item</string>
+    <string name="list_item_repeating">This is a repeating item</string>
+    <string name="lbl_list_item_purchase_date">Bought on %1$s by %2$s</string>
 </resources>

@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Items" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstListItems"
         android:name="net.igorilic.didyoubuyit.list.ui.ListItemFragment"
