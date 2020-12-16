@@ -2,6 +2,7 @@ package net.igorilic.didyoubuyit.list.ui.items
 
 import android.os.Bundle
 import android.view.View
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,15 +11,18 @@ import com.android.volley.Request
 import com.google.gson.reflect.TypeToken
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
 import net.igorilic.didyoubuyit.model.ListModel
+import net.igorilic.didyoubuyit.model.UserModel
 import org.json.JSONObject
 
 class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
     private lateinit var list: ListModel
     private lateinit var listItems: ArrayList<ListItemModel>
     private lateinit var adapter: ListItemAdapter
+    private lateinit var globalHelper: GlobalHelper
 
     private fun loadListItems() {
         ProgressDialogHelper.showProgressDialog(requireActivity())
@@ -46,7 +50,7 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
                 resources.getString(R.string.error_list_item_loading_failed),
                 "ListItemFragment"
             )
-        }, Request.Method.GET, true);
+        }, Request.Method.GET, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,18 +58,90 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
             return
         }
 
+        globalHelper = GlobalHelper(requireContext())
+
         list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
 
         listItems = ArrayList()
 
-        adapter = ListItemAdapter(listItems, requireActivity())
+        adapter = ListItemAdapter(
+            listItems,
+            requireActivity(),
+            object : ListItemAdapter.ListItemInterface {
+                override fun onItemBoughtChangeState(
+                    position: Int,
+                    item: ListItemModel,
+                    isChecked: Boolean
+                ) {
+                    changeItemBoughtState(position, item)
+                }
+
+                override fun onItemLongClick(view: View, position: Int, item: ListItemModel) {
+                    showContextMenu(view, position, item)
+                }
+            })
         val lst = view.findViewById<RecyclerView>(R.id.lstListItems)
         lst.layoutManager = LinearLayoutManager(context)
         lst.adapter = adapter
 
         loadListItems()
 
+        registerForContextMenu(lst)
+
         (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun showContextMenu(view: View, position: Int, item: ListItemModel) {
+        val pop = PopupMenu(requireContext(), view)
+        pop.inflate(R.menu.list_item_menu)
+
+        pop.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.acListItemEdit -> AppInstance.globalHelper.notifyMSG("Edit item: ${item.name}")
+                R.id.acListItemDelete -> AppInstance.globalHelper.notifyMSG("Delete item: ${item.name}")
+            }
+            true
+        }
+
+        pop.show()
+    }
+
+    private fun changeItemBoughtState(position: Int, item: ListItemModel) {
+        ProgressDialogHelper.showProgressDialog(requireActivity())
+        AppInstance.app.callAPI("/list/item/${list.id}/${item.id}/bought", null, {
+            try {
+                val res = JSONObject(it)
+                val mItem = AppInstance.gson.fromJson(
+                    res.getJSONObject("data").toString(),
+                    ListItemModel::class.java
+                )
+                val userJson = res.getJSONObject("data").optJSONObject("purchasedUserID")
+
+                if (userJson != null) {
+                    val mUser =
+                        AppInstance.gson.fromJson(userJson.toString(), UserModel::class.java)
+                    mItem.purchasedUserID = mUser
+                }
+
+                adapter.updateItem(position, mItem)
+                adapter.notifyDataSetChanged()
+            } catch (e: java.lang.Exception) {
+                AppInstance.globalHelper.logMsg("[ERROR][ListItemFragment]${e.message}")
+                e.printStackTrace()
+            } finally {
+                ProgressDialogHelper.hideProgressDialog()
+                AppInstance.globalHelper.notifyMSG(requireActivity().resources.getString(R.string.list_item_bought_state_update_success))
+            }
+        }, {
+            globalHelper.showMessageDialog(
+                globalHelper.parseErrorNetworkResponse(
+                    it,
+                    requireContext().resources.getString(R.string.error_unable_to_update_list_item),
+                    "ListItemFragment"
+                )
+            )
+            ProgressDialogHelper.hideProgressDialog()
+        }, Request.Method.PATCH, true)
     }
 }

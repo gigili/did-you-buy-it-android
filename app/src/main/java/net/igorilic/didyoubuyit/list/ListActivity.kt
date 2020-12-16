@@ -1,6 +1,5 @@
 package net.igorilic.didyoubuyit.list
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -69,9 +68,5 @@ class ListActivity : AppCompatActivity() {
         } else {
             onSupportNavigateUp()
         }
-    }
-
-    override fun startActivities(intents: Array<out Intent>?, options: Bundle?) {
-        super.startActivities(intents, options)
     }
 }

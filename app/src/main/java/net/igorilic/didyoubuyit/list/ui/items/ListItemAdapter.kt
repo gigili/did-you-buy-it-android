@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
@@ -15,8 +16,14 @@ import net.igorilic.didyoubuyit.model.ListItemModel
 
 class ListItemAdapter(
     private val values: ArrayList<ListItemModel>,
-    private val context: Activity
+    private val context: Activity,
+    private val mListItemInterface: ListItemInterface
 ) : RecyclerView.Adapter<ListItemAdapter.ViewHolder>() {
+
+    interface ListItemInterface {
+        fun onItemBoughtChangeState(position: Int, item: ListItemModel, isChecked: Boolean)
+        fun onItemLongClick(view: View, position: Int, item: ListItemModel)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -37,7 +44,7 @@ class ListItemAdapter(
             holder.imgListItemRepeating.visibility = View.VISIBLE
         }
 
-        if (item.purchaseDate != null && item.__purchasedUserID__ != null) {
+        if (item.purchaseDate != null && item.purchasedUserID != null) {
             holder.lblListItemPurchaseDate.visibility = View.VISIBLE
             holder.lblListItemPurchaseDate.text = String.format(
                 context.resources.getString(R.string.lbl_list_item_purchase_date),
@@ -45,19 +52,30 @@ class ListItemAdapter(
                     item.purchaseDate,
                     "yyyy-MM-dd'T'HH:mm:ss.S'Z'"
                 ),
-                item.__purchasedUserID__.name
+                item.purchasedUserID!!.name
             )
             holder.cbBuyItem.isChecked = true
         }
-        setupPaintFlags(holder, item, item.__purchasedUserID__ != null)
+        setupPaintFlags(holder, item, item.purchasedUserID != null)
 
         holder.cbBuyItem.setOnClickListener {
-            setupPaintFlags(holder, item, holder.cbBuyItem.isChecked)
+            val isChecked = holder.cbBuyItem.isChecked
+            setupPaintFlags(holder, item, isChecked)
+
+            holder.lblListItemPurchaseDate.visibility =
+                if (isChecked) View.VISIBLE else View.GONE
+
+            mListItemInterface.onItemBoughtChangeState(position, item, isChecked)
+        }
+
+        holder.lytCardListItem.setOnLongClickListener {
+            mListItemInterface.onItemLongClick(it, position, item)
+            true
         }
     }
 
     private fun setupPaintFlags(holder: ViewHolder, item: ListItemModel, isChecked: Boolean) {
-        if (item.__purchasedUserID__ != null && isChecked) {
+        if (item.purchasedUserID != null && isChecked) {
             holder.lblListItemName.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             holder.lblListItemName.paintFlags = Paint.LINEAR_TEXT_FLAG
@@ -70,7 +88,12 @@ class ListItemAdapter(
         values.addAll(items)
     }
 
+    fun updateItem(position: Int, mItem: ListItemModel) {
+        values[position] = mItem
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val lytCardListItem: CardView = view.findViewById(R.id.lytCardListItem)
         val cbBuyItem: CheckBox = view.findViewById(R.id.cbBuyItem)
         val lblListItemName: TextView = view.findViewById(R.id.lblListItemName)
         val lblListItemPurchaseDate: TextView = view.findViewById(R.id.lblListItemPurchaseDate)

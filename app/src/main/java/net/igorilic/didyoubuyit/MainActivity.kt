@@ -12,12 +12,12 @@ import com.android.volley.Request
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
-import net.igorilic.didyoubuyit.adapters.ListsAdapter
 import net.igorilic.didyoubuyit.databinding.ActivityMainBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.list.ListActivity
+import net.igorilic.didyoubuyit.list.ListsAdapter
 import net.igorilic.didyoubuyit.model.ListModel
 import org.json.JSONObject
 

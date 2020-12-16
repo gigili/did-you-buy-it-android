@@ -1,4 +1,4 @@
-package net.igorilic.didyoubuyit.adapters
+package net.igorilic.didyoubuyit.list
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -66,10 +66,6 @@ class ListsAdapter(
 
     override fun getItemId(position: Int): Long {
         return items[position].id?.toLong() ?: 0L
-    }
-
-    fun addNewItem(item: ListModel) {
-        items.add(item)
     }
 
     fun addNewItems(newItems: ArrayList<ListModel>) {

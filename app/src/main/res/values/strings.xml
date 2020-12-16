@@ -50,4 +50,8 @@
     <string name="list_item_image">Image for the list item</string>
     <string name="list_item_repeating">This is a repeating item</string>
     <string name="lbl_list_item_purchase_date">Bought on %1$s by %2$s</string>
+    <string name="error_unable_to_update_list_item">Unable to update list item</string>
+    <string name="list_item_bought_state_update_success">Item bought state updated successfully</string>
+    <string name="lbl_edit">Edit</string>
+    <string name="lbl_delete">Delete</string>
 </resources>
