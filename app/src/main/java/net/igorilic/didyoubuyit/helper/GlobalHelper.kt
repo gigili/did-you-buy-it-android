@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.navigation.NavigationView
 import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
+import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.LogLevelTypes.*
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -93,10 +94,33 @@ open class GlobalHelper constructor(private var context: Context) {
         preferencesEditor.commit()
     }
 
-    fun logMsg(str: String, tag: String? = null, logLevel: Level = Level.INFO) {
+    fun logMsg(
+        str: String,
+        logBlockLvl: LogLevelTypes = Info,
+        className: String = "",
+        tag: String = LOG_TAG
+    ) {
         val log = Logger.getAnonymousLogger()
-        val logTag = tag ?: LOG_TAG
-        val logString = "$logTag | $str"
+        val logBlock: String
+        val logLevel: Level
+
+        when (logBlockLvl) {
+            Info -> {
+                logBlock = "[INFO]"
+                logLevel = Level.INFO
+            }
+            Error -> {
+                logBlock = "[ERROR]"
+                logLevel = Level.SEVERE
+            }
+            Warning -> {
+                logBlock = "[WARNING]"
+                logLevel = Level.WARNING
+            }
+        }
+
+        val locationName = if (className.length > 1) "$className " else className
+        val logString = "$tag | $logBlock $locationName| $str"
 
         if (BuildConfig.DEBUG) {
             log.log(logLevel, logString)
@@ -275,9 +299,9 @@ open class GlobalHelper constructor(private var context: Context) {
 
             val activityTag = if (activity.isNotEmpty()) "[$activity]" else ""
             AppInstance.globalHelper.logMsg(
-                "[ERROR]$activityTag Error: ${
-                    data.getJSONObject("error").optString("message")
-                }"
+                data.getJSONObject("error").optString("message"),
+                Error,
+                activityTag
             )
         } else {
             errorMessage = defaultErrorMessage
@@ -298,6 +322,12 @@ open class GlobalHelper constructor(private var context: Context) {
 
         fun convertToHex(data: ByteArray): String {
             return data.joinToString("") { "%02x".format(it) }
+        }
+
+        enum class LogLevelTypes {
+            Info,
+            Warning,
+            Error
         }
     }
 }

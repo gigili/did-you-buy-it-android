@@ -8,6 +8,7 @@ import com.android.volley.Request
 import net.igorilic.didyoubuyit.databinding.ActivityLoginBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.GlobalHelper.*
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.TokenModel
 import net.igorilic.didyoubuyit.model.UserModel
@@ -85,7 +86,6 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val res = JSONObject(response)
                 if (!res.getBoolean("success")) {
-                    AppInstance.globalHelper.logMsg("[INFO][LoginActivity] $response")
                     globalHelper.showMessageDialog(getString(R.string.error_login_failed))
                     return@callAPI
                 }
@@ -106,7 +106,11 @@ class LoginActivity : AppCompatActivity() {
 
                 openMainActivity()
             } catch (e: Exception) {
-                AppInstance.globalHelper.logMsg("[ERROR][LOGIN] Exception: ${e.message}")
+                AppInstance.globalHelper.logMsg(
+                    "Exception: ${e.message}",
+                    Companion.LogLevelTypes.Error,
+                    "LoginActivity"
+                )
             } finally {
                 ProgressDialogHelper.hideProgressDialog()
             }

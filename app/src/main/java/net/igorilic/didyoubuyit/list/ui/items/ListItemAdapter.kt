@@ -33,7 +33,6 @@ class ListItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-
         holder.lblListItemName.text = item.name
 
         if (!item.image.isNullOrEmpty()) {

@@ -30,7 +30,7 @@ data class ListModel(
         return name ?: ""
     }
 
-    fun toJSON(): JSONObject {
+    private fun toJSON(): JSONObject {
         val json = JSONObject()
 
         if (name.isNullOrEmpty()) return json

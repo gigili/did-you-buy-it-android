@@ -86,7 +86,11 @@ class MainActivity : AppCompatActivity() {
                 listsAdapter.addNewItems(lists)
                 listsAdapter.notifyDataSetChanged()
             } catch (e: Exception) {
-                AppInstance.globalHelper.logMsg("[ERROR][MainActivity loadLists] Exception: ${e.message}")
+                AppInstance.globalHelper.logMsg(
+                    "Exception: ${e.message}",
+                    GlobalHelper.Companion.LogLevelTypes.Error,
+                    "MainActivity@loadLists"
+                )
             } finally {
                 ProgressDialogHelper.hideProgressDialog()
             }
@@ -96,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 globalHelper.parseErrorNetworkResponse(
                     it,
                     getString(R.string.error_list_loading_failed),
-                    "MainActivity"
+                    "MainActivity@loadLists"
                 )
             )
         }, Request.Method.GET, true)

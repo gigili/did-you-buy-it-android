@@ -18,7 +18,7 @@ data class ListItemModel(
     @field:SerializedName("purchase_date")
     val purchaseDate: String? = null,
 
-    @field:SerializedName("__purchasedUserID__")
+    @field:SerializedName("purchasedUserID")
     var purchasedUserID: UserModel? = null
 ) {
     override fun toString(): String {

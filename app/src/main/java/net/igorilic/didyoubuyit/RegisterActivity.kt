@@ -98,7 +98,11 @@ class RegisterActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                AppInstance.globalHelper.logMsg("[ERROR][SIGN UP] Exception: ${e.message}")
+                AppInstance.globalHelper.logMsg(
+                    "Exception: ${e.message}",
+                    GlobalHelper.Companion.LogLevelTypes.Error,
+                    "RegisterActivity"
+                )
             } finally {
                 ProgressDialogHelper.hideProgressDialog()
             }
