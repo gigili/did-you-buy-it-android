@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/lytCardList"
-    android:padding="@dimen/activity_vertical_margin">
+    android:id="@+id/lytCardList">
 
     <androidx.cardview.widget.CardView
+        android:padding="@dimen/padding_medium"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/corner_radius_small">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -57,4 +55,10 @@
                 tools:text="Users: 2" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
+    <View
+        android:background="@color/list_separator_background"
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        tools:ignore="SmallSp" />
 </LinearLayout>

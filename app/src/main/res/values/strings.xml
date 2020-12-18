@@ -54,4 +54,6 @@
     <string name="list_item_bought_state_update_success">Item bought state updated successfully</string>
     <string name="lbl_edit">Edit</string>
     <string name="lbl_delete">Delete</string>
+    <string name="enlarge_image">Enlarge image</string>
+    <string name="lbl_repeating_item">Repeating item</string>
 </resources>

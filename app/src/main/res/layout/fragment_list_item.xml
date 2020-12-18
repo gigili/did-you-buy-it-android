@@ -13,5 +13,7 @@
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         tools:context=".list.ui.items.ListItemFragment"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="@dimen/bottom_navigation_bar_size"
         tools:listitem="@layout/card_list_item" />
 </LinearLayout>

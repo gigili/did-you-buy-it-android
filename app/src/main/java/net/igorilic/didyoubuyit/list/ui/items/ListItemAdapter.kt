@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
 
 class ListItemAdapter(
@@ -37,15 +40,23 @@ class ListItemAdapter(
 
         if (!item.image.isNullOrEmpty()) {
             holder.imgListItemImage.visibility = View.VISIBLE
+            holder.imgListItemEnlarge.visibility = View.VISIBLE
+            val imageUrl =
+                "${AppInstance.globalHelper.getStringPref("API_URL")}/${GlobalHelper.LIST_ITEM_IMAGE_PATH}/${item.image}"
+            Glide.with(context)
+                .asBitmap()
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(holder.imgListItemImage)
         }
 
         if (item.isRepeating == "1") {
-            holder.imgListItemRepeating.visibility = View.VISIBLE
+            holder.lblListItemRepeating.visibility = View.VISIBLE
         }
 
         if (item.purchaseDate != null && item.purchasedUserID != null) {
-            holder.lblListItemPurchaseDate.visibility = View.VISIBLE
-            holder.lblListItemPurchaseDate.text = String.format(
+            holder.lblListItemPurchaseInfo.visibility = View.VISIBLE
+            holder.lblListItemPurchaseInfo.text = String.format(
                 context.resources.getString(R.string.lbl_list_item_purchase_date),
                 AppInstance.globalHelper.formatDate(
                     item.purchaseDate,
@@ -61,7 +72,7 @@ class ListItemAdapter(
             val isChecked = holder.cbBuyItem.isChecked
             setupPaintFlags(holder, item, isChecked)
 
-            holder.lblListItemPurchaseDate.visibility =
+            holder.lblListItemPurchaseInfo.visibility =
                 if (isChecked) View.VISIBLE else View.GONE
 
             mListItemInterface.onItemBoughtChangeState(position, item, isChecked)
@@ -92,11 +103,12 @@ class ListItemAdapter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val lytCardListItem: CardView = view.findViewById(R.id.lytCardListItem)
+        val lytCardListItem: RelativeLayout = view.findViewById(R.id.lytCardListItem)
         val cbBuyItem: CheckBox = view.findViewById(R.id.cbBuyItem)
         val lblListItemName: TextView = view.findViewById(R.id.lblListItemName)
-        val lblListItemPurchaseDate: TextView = view.findViewById(R.id.lblListItemPurchaseDate)
+        val lblListItemPurchaseInfo: TextView = view.findViewById(R.id.lblListItemPurchaseInfo)
         val imgListItemImage: ImageView = view.findViewById(R.id.imgListItemImage)
-        val imgListItemRepeating: ImageView = view.findViewById(R.id.imgListItemRepeating)
+        val imgListItemEnlarge: ImageView = view.findViewById(R.id.imgListItemEnlarge)
+        val lblListItemRepeating: TextView = view.findViewById(R.id.lblListItemRepeating)
     }
 }

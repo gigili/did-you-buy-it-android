@@ -2,6 +2,7 @@ package net.igorilic.didyoubuyit.list
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -54,6 +55,14 @@ class ListActivity : AppCompatActivity() {
             }
             false
         }
+
+        supportActionBar?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.color.action_bar_color
+            )
+        )
+        //supportActionBar?.displayOptions
     }
 
     override fun onSupportNavigateUp(): Boolean {

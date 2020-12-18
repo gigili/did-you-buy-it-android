@@ -30,11 +30,9 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
         }
 
         globalHelper = GlobalHelper(requireContext())
-
         list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
 
         listItems = ArrayList()
-
         adapter = ListItemAdapter(
             listItems,
             requireActivity(),
@@ -60,6 +58,7 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
         registerForContextMenu(lst)
 
         (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
+
         super.onViewCreated(view, savedInstanceState)
     }
 

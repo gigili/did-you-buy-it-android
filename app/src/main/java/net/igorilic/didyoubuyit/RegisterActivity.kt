@@ -3,6 +3,7 @@ package net.igorilic.didyoubuyit
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import net.igorilic.didyoubuyit.databinding.ActivityRegisterBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
@@ -22,6 +23,12 @@ class RegisterActivity : AppCompatActivity() {
         globalHelper = GlobalHelper(this@RegisterActivity)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.color.action_bar_color
+            )
+        )
 
         registerBinding.btnRegister.setOnClickListener {
             register()

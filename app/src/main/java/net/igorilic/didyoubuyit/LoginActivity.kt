@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import net.igorilic.didyoubuyit.databinding.ActivityLoginBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
@@ -24,6 +25,12 @@ class LoginActivity : AppCompatActivity() {
 
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(loginBinding.root)
+        supportActionBar?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.color.action_bar_color
+            )
+        )
 
         loginBinding.edtPassword.apply {
             setOnEditorActionListener { _, actionId, _ ->

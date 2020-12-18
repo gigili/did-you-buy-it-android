@@ -316,6 +316,7 @@ open class GlobalHelper constructor(private var context: Context) {
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
         var PROFILE_IMAGE_PATH = "images/user"
+        var LIST_ITEM_IMAGE_PATH = "images/listItem"
         val EMAIL_PATTERN =
             Regex("^(([a-zA-Z0-9_\\-]+(\\.[a-zA-Z0-9_\\-]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$")
         private var PREFERENCE_TAG = "DidYouBuyItPreference"
