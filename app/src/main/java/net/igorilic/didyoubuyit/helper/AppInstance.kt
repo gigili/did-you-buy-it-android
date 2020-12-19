@@ -9,8 +9,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import org.json.JSONObject
 
 @Suppress("PrivatePropertyName")
@@ -82,7 +80,7 @@ class AppInstance : Application() {
     }
 
     companion object {
-        private val applicationScope = CoroutineScope(SupervisorJob())
+        //private val applicationScope = CoroutineScope(SupervisorJob())
         const val VOLLEY_DEFAULT_TAG = "dybiVolleyDefaultTag"
         private var mAppContext: Context? = null
         lateinit var globalHelper: GlobalHelper

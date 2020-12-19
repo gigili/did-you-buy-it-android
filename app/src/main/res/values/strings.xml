@@ -56,4 +56,9 @@
     <string name="lbl_delete">Delete</string>
     <string name="enlarge_image">Enlarge image</string>
     <string name="lbl_repeating_item">Repeating item</string>
+    <string name="lbl_owner">Owner</string>
+    <string name="error_list_users_failed_to_load">Failed to load the users for this list</string>
+    <string name="action_confirm_user_delete">Are you sure you want to remove the user %1$s from this list?</string>
+    <string name="lbl_confirm_action">Confirm action</string>
+    <string name="error_deleting_list_user">There was an error while deleting the list user</string>
 </resources>

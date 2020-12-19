@@ -62,7 +62,6 @@ class ListActivity : AppCompatActivity() {
                 R.color.action_bar_color
             )
         )
-        //supportActionBar?.displayOptions
     }
 
     override fun onSupportNavigateUp(): Boolean {

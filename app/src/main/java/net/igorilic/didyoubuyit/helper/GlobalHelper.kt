@@ -27,7 +27,6 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -127,7 +126,12 @@ open class GlobalHelper constructor(private var context: Context) {
         }
     }
 
-    fun showMessageDialog(msg: String, title: String = "", callback: Callable<Void>? = null) {
+    fun showMessageDialog(
+        msg: String,
+        title: String = "",
+        hasNegativeButton: Boolean = false,
+        callback: (() -> Unit)? = null
+    ) {
         try {
             val mTitle = if (title.isNotEmpty()) title else context.getString(R.string.warning)
             val dl = AlertDialog.Builder(context)
@@ -135,14 +139,19 @@ open class GlobalHelper constructor(private var context: Context) {
                 .setMessage(msg)
                 .setPositiveButton(context.getString(R.string.ok)) { dl, _ ->
                     dl.dismiss()
-
-                    if (callback !== null) {
-                        callback.call()
+                    if (callback != null) {
+                        callback()
                     }
                 }
-                .create()
             //.show()
 
+            if (hasNegativeButton) {
+                dl.setNegativeButton(context.getString(R.string.no)) { dln, _ ->
+                    dln.dismiss()
+                }
+            }
+
+            dl.create()
             dl.show()
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -292,7 +301,7 @@ open class GlobalHelper constructor(private var context: Context) {
         activity: String = ""
     ): String {
         val errorMessage: String
-        if (error.networkResponse !== null && error.networkResponse.data !== null) {
+        if (error.networkResponse !== null && error.networkResponse.data !== null && error.networkResponse.data.isNotEmpty()) {
             val data = JSONObject(String(error.networkResponse.data))
             val errorObject = data.getJSONObject("error")
             errorMessage = errorObject.getString("message")

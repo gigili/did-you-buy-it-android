@@ -55,8 +55,6 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
 
         loadListItems()
 
-        registerForContextMenu(lst)
-
         (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
 
         super.onViewCreated(view, savedInstanceState)

@@ -1,15 +1,31 @@
 package net.igorilic.didyoubuyit.list.ui.users
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import net.igorilic.didyoubuyit.R
+import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.model.ListModel
+import net.igorilic.didyoubuyit.model.UserModel
 
 class ListUserAdapter(
-    private val values: ArrayList<String>
+    private val context: Context,
+    private val values: ArrayList<UserModel>,
+    private val list: ListModel,
+    private val mInterface: ListUserAdapterInterface
 ) : RecyclerView.Adapter<ListUserAdapter.ViewHolder>() {
+
+    interface ListUserAdapterInterface {
+        fun onLongItemClick(view: View, item: UserModel, position: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -19,16 +35,48 @@ class ListUserAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
+
+        holder.lblListUserName.text = item.name
+        holder.lblListUserEmail.text = item.email
+
+        if (!item.image.isNullOrEmpty()) {
+            val imageUrl =
+                "${AppInstance.globalHelper.getStringPref("API_URL")}/${GlobalHelper.PROFILE_IMAGE_PATH}/${item.image}"
+            Glide.with(context)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(holder.imgListUserImage)
+
+            holder.imgListUserImage.visibility = View.VISIBLE
+            holder.imgListUserEnlarge.visibility = View.VISIBLE
+        }
+
+        if (list.userID == item.id) {
+            holder.lblListUserInfo.visibility = View.VISIBLE
+        }
+
+        holder.lytCardListUser.setOnLongClickListener {
+            mInterface.onLongItemClick(it, item, position)
+            true
+        }
     }
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val idView: TextView = view.findViewById(R.id.item_number)
-        val contentView: TextView = view.findViewById(R.id.content)
+    fun addItems(items: java.util.ArrayList<UserModel>) {
+        values.addAll(items)
+    }
 
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+    fun removeItem(position: Int) {
+        values.removeAt(position)
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val lytCardListUser: RelativeLayout = view.findViewById(R.id.lytCardListUser)
+        val imgListUserImage: ImageView = view.findViewById(R.id.imgListUserImage)
+        val imgListUserEnlarge: ImageView = view.findViewById(R.id.imgListUserEnlarge)
+        val lblListUserName: TextView = view.findViewById(R.id.lblListUserName)
+        val lblListUserEmail: TextView = view.findViewById(R.id.lblListUserEmail)
+        val lblListUserInfo: TextView = view.findViewById(R.id.lblListUserInfo)
     }
 }
