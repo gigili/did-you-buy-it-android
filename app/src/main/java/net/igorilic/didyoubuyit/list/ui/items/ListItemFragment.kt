@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit.list.ui.items
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
@@ -16,6 +17,7 @@ import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.LogLevelTypes
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
 import net.igorilic.didyoubuyit.model.ListModel
+import net.igorilic.didyoubuyit.utility.ImageViewActivity
 import org.json.JSONObject
 
 class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
@@ -47,6 +49,13 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
 
                 override fun onItemLongClick(view: View, position: Int, item: ListItemModel) {
                     showContextMenu(view, position, item)
+                }
+
+                override fun onListItemImageEnlarge(item: ListItemModel, imageUrl: String) {
+                    val fullScreenView = Intent(requireContext(), ImageViewActivity::class.java)
+                    fullScreenView.putExtra("imageUrl", imageUrl)
+                    fullScreenView.putExtra("imageDescription", item.name)
+                    startActivity(fullScreenView)
                 }
             })
         val lst = view.findViewById<RecyclerView>(R.id.lstListItems)

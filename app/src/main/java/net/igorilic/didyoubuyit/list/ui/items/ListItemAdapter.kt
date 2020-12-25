@@ -26,6 +26,7 @@ class ListItemAdapter(
     interface ListItemInterface {
         fun onItemBoughtChangeState(position: Int, item: ListItemModel, isChecked: Boolean)
         fun onItemLongClick(view: View, position: Int, item: ListItemModel)
+        fun onListItemImageEnlarge(item: ListItemModel, imageUrl: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,6 +49,14 @@ class ListItemAdapter(
                 .load(imageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.imgListItemImage)
+
+            holder.imgListItemImage.setOnClickListener {
+                mListItemInterface.onListItemImageEnlarge(item, imageUrl)
+            }
+
+            holder.imgListItemEnlarge.setOnClickListener {
+                mListItemInterface.onListItemImageEnlarge(item, imageUrl)
+            }
         }
 
         if (item.isRepeating == "1") {

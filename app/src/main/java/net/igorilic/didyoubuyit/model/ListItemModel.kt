@@ -1,6 +1,7 @@
 package net.igorilic.didyoubuyit.model
 
 import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
 data class ListItemModel(
     @field:SerializedName("id")
@@ -22,6 +23,21 @@ data class ListItemModel(
     var purchasedUserID: UserModel? = null
 ) {
     override fun toString(): String {
-        return "$id | $name | $isRepeating | $purchasedUserID"
+        //return "$id | $name | $isRepeating | $purchasedUserID"
+        return toJSON().toString()
+    }
+
+    fun toJSON(): JSONObject {
+        val obj = JSONObject()
+
+        if (id == null) return obj
+        obj.put("id", id)
+        obj.put("name", name)
+        obj.put("image", image)
+        obj.put("isRepeating", isRepeating)
+        obj.put("purchaseDate", purchaseDate)
+        //obj.put("isRepeating", isRepeating)
+
+        return obj
     }
 }

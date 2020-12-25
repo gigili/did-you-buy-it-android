@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit.list.ui.users
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
@@ -16,6 +17,7 @@ import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListModel
 import net.igorilic.didyoubuyit.model.UserModel
+import net.igorilic.didyoubuyit.utility.ImageViewActivity
 import org.json.JSONObject
 
 class ListUserFragment : Fragment(R.layout.fragment_list_user) {
@@ -46,6 +48,12 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
                     if (list.userID == globalHelper.getIntPref("user_id")) {
                         showContextMenu(view, position, item)
                     }
+                }
+
+                override fun onListUserImageEnlarge(user: UserModel, imageUrl: String) {
+                    val fullScreenImage = Intent(requireContext(), ImageViewActivity::class.java)
+                    fullScreenImage.putExtra("imageUrl", imageUrl)
+                    startActivity(fullScreenImage)
                 }
             })
 

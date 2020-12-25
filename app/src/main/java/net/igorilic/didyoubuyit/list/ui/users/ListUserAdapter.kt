@@ -25,6 +25,7 @@ class ListUserAdapter(
 
     interface ListUserAdapterInterface {
         fun onLongItemClick(view: View, item: UserModel, position: Int)
+        fun onListUserImageEnlarge(user: UserModel, imageUrl: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +50,14 @@ class ListUserAdapter(
 
             holder.imgListUserImage.visibility = View.VISIBLE
             holder.imgListUserEnlarge.visibility = View.VISIBLE
+
+            holder.imgListUserImage.setOnClickListener {
+                mInterface.onListUserImageEnlarge(item, imageUrl)
+            }
+
+            holder.imgListUserEnlarge.setOnClickListener {
+                mInterface.onListUserImageEnlarge(item, imageUrl)
+            }
         }
 
         if (list.userID == item.id) {

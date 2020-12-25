@@ -61,4 +61,9 @@
     <string name="action_confirm_user_delete">Are you sure you want to remove the user %1$s from this list?</string>
     <string name="lbl_confirm_action">Confirm action</string>
     <string name="error_deleting_list_user">There was an error while deleting the list user</string>
+    <string name="lbl_add_new_item">Add new item</string>
+    <string name="title_activity_image_view">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="lbl_image_placeholder">Image placeholder</string>
 </resources>
