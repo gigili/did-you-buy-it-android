@@ -21,7 +21,6 @@ class ImageViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_image_view)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.hide()
 
         imageView = findViewById(R.id.imgFullScreen)

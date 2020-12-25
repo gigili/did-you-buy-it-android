@@ -111,12 +111,57 @@ class ListItemFragment() : Fragment(R.layout.fragment_list_item) {
         pop.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.acListItemEdit -> AppInstance.globalHelper.notifyMSG("Edit item: ${item.name}")
-                R.id.acListItemDelete -> AppInstance.globalHelper.notifyMSG("Delete item: ${item.name}")
+                R.id.acListItemDelete -> {
+                    globalHelper.showMessageDialog(
+                        String.format(
+                            requireContext().resources.getString(R.string.action_confirm_list_item_delete),
+                            item.name
+                        ),
+                        requireContext().resources.getString(R.string.lbl_confirm_action),
+                        hasNegativeButton = true
+                    ) {
+                        deleteListItem(item, position)
+                    }
+                }
             }
             true
         }
 
         pop.show()
+    }
+
+    private fun deleteListItem(item: ListItemModel, position: Int) {
+        ProgressDialogHelper.showProgressDialog(requireActivity())
+        AppInstance.app.callAPI("/list/item/${list.id}/${item.id}", null, {
+            try {
+                val res = JSONObject(it)
+                if (res.optBoolean("success", false)) {
+                    AppInstance.globalHelper.notifyMSG(requireContext().resources.getString(R.string.list_item_removed_success))
+                    adapter.removeItem(position)
+                    adapter.notifyItemRemoved(position)
+                } else {
+                    AppInstance.globalHelper.notifyMSG(requireContext().resources.getString(R.string.error_deleting_list_item))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                AppInstance.globalHelper.logMsg(
+                    "${e.message}",
+                    LogLevelTypes.Error,
+                    "ListItemFragment@deleteListItem"
+                )
+            } finally {
+                ProgressDialogHelper.hideProgressDialog()
+            }
+        }, {
+            ProgressDialogHelper.hideProgressDialog()
+            globalHelper.showMessageDialog(
+                globalHelper.parseErrorNetworkResponse(
+                    it,
+                    requireContext().resources.getString(R.string.error_deleting_list_item),
+                    "ListItemFragment@deleteListItem"
+                )
+            )
+        }, Request.Method.DELETE, true)
     }
 
     private fun changeItemBoughtState(position: Int, item: ListItemModel) {

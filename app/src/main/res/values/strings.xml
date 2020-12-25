@@ -66,4 +66,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="lbl_image_placeholder">Image placeholder</string>
+    <string name="action_confirm_list_item_delete">Are you sure you want to delete the item \"%1$s\"</string>
+    <string name="error_deleting_list_item">There was an error trying to remove the list item.</string>
+    <string name="list_item_removed_success">List item deleted successfully</string>
 </resources>

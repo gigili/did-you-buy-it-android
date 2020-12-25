@@ -111,6 +111,10 @@ class ListItemAdapter(
         values[position] = mItem
     }
 
+    fun removeItem(position: Int) {
+        values.removeAt(position)
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val lytCardListItem: RelativeLayout = view.findViewById(R.id.lytCardListItem)
         val cbBuyItem: CheckBox = view.findViewById(R.id.cbBuyItem)
