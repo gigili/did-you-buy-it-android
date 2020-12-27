@@ -77,8 +77,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
      */
 
-    implementation 'com.github.Drjacky:ImagePicker:1.7.10'
-
     implementation 'com.aghajari.zoomhelper:ZoomHelper:1.0.1'
 
 }

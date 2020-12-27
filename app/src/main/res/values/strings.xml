@@ -69,4 +69,13 @@
     <string name="action_confirm_list_item_delete">Are you sure you want to delete the item \"%1$s\"</string>
     <string name="error_deleting_list_item">There was an error trying to remove the list item.</string>
     <string name="list_item_removed_success">List item deleted successfully</string>
+    <string name="lbl_edit_list_item">Edit list item</string>
+    <string name="lbl_update_item">Update item</string>
+    <string name="prompt_list_item_name">Item name:</string>
+    <string name="prompt_repeating_item">Is this item repeatable?</string>
+    <string name="lbl_add_new_item_image">Add new list item image</string>
+    <string name="lbl_add_new_image">Add new image</string>
+    <string name="lbl_list_item_image">Preview of a list item image</string>
+    <string name="lbl_remove_image">Remove image</string>
+    <string name="app_camera_permission_nedeed">Camera permission is required for adding new images</string>
 </resources>

@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit.list
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -76,5 +77,10 @@ class ListActivity : AppCompatActivity() {
         } else {
             onSupportNavigateUp()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AppInstance.globalHelper.logMsg("Passing it off to fragment")
     }
 }

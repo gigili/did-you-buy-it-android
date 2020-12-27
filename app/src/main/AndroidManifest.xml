@@ -4,6 +4,7 @@
     package="net.igorilic.didyoubuyit">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".helper.AppInstance"
@@ -21,7 +22,7 @@
             android:name=".utility.ImageViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_image_view"
-            android:theme="@style/Theme.DidYouBuyIt.Fullscreen"></activity>
+            android:theme="@style/Theme.DidYouBuyIt.Fullscreen" />
         <activity
             android:name=".list.ListActivity"
             android:label="@string/title_activity_list" />
