@@ -13,7 +13,7 @@ import net.igorilic.didyoubuyit.model.ListModel
 
 class ListsAdapter(
     private val context: Context,
-    private val items: ArrayList<ListModel>,
+    private val items: ArrayList<ListModel>?,
     private val mListItemClickListener: OnListItemClickListener
 ) :
     RecyclerView.Adapter<ListsAdapter.ViewHolder>() {
@@ -61,18 +61,14 @@ class ListsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return items?.size ?: 0
     }
 
     override fun getItemId(position: Int): Long {
-        return items[position].id?.toLong() ?: 0L
-    }
-
-    fun addNewItems(newItems: ArrayList<ListModel>) {
-        items.addAll(newItems)
+        return items?.get(position)?.id?.toLong() ?: 0L
     }
 
     private fun getItem(position: Int): ListModel {
-        return items[position]
+        return items?.get(position) ?: ListModel()
     }
 }

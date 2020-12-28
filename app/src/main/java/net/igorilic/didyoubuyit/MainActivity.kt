@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
@@ -17,6 +18,7 @@ import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.list.ListActivity
+import net.igorilic.didyoubuyit.list.ListViewModel
 import net.igorilic.didyoubuyit.list.ListsAdapter
 import net.igorilic.didyoubuyit.model.ListModel
 import org.json.JSONObject
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var lstLists: RecyclerView
     private lateinit var listsAdapter: ListsAdapter
+    private var lists: ArrayList<ListModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +45,16 @@ class MainActivity : AppCompatActivity() {
         globalHelper = GlobalHelper(this@MainActivity)
         globalHelper.setupDrawerLayout(toolbar)
 
+        val viewModel = ViewModelProvider(this).get(ListViewModel::class.java)
+        viewModel.getLists().observe(this@MainActivity, {
+            lists.addAll(it)
+            listsAdapter.notifyDataSetChanged()
+        })
+
         lstLists = findViewById(R.id.lstLists)
         listsAdapter = ListsAdapter(
             this@MainActivity,
-            ArrayList(),
+            lists,
             object : ListsAdapter.OnListItemClickListener {
                 override fun onItemClicked(item: ListModel) {
                     openListDetails(item)
@@ -60,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 
-        loadLists()
+        //loadLists()
     }
 
     private fun openListDetails(list: ListModel) {
@@ -71,6 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadLists() {
+        ProgressDialogHelper.showProgressDialog(this@MainActivity)
         AppInstance.app.callAPI("/list", null, {
             try {
                 val res = JSONObject(it)
@@ -82,9 +92,6 @@ class MainActivity : AppCompatActivity() {
                     res.getJSONArray("data").toString(),
                     listsListType
                 )
-
-                listsAdapter.addNewItems(lists)
-                listsAdapter.notifyDataSetChanged()
             } catch (e: Exception) {
                 AppInstance.globalHelper.logMsg(
                     "Exception: ${e.message}",
@@ -97,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         }, {
             ProgressDialogHelper.hideProgressDialog()
             globalHelper.showMessageDialog(
-                globalHelper.parseErrorNetworkResponse(
+                AppInstance.globalHelper.parseErrorNetworkResponse(
                     it,
                     getString(R.string.error_list_loading_failed),
                     "MainActivity@loadLists"
