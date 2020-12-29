@@ -1,29 +1,27 @@
 package net.igorilic.didyoubuyit.list
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.android.volley.Request
 import com.google.gson.reflect.TypeToken
+import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.model.ListModel
 import org.json.JSONObject
 
 
-class ListViewModel(application: Application) : AndroidViewModel(application) {
-    private lateinit var lists: MutableLiveData<ArrayList<ListModel>>
+class ListViewModel : ViewModel() {
+    private val lists: MutableLiveData<ArrayList<ListModel>> = MutableLiveData()
+    private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     fun getLists(): LiveData<ArrayList<ListModel>> {
-        if (::lists.isInitialized) return lists
-
         getAllList()
         return lists
     }
 
     private fun getAllList() {
-        lists = MutableLiveData()
         AppInstance.app.callAPI("/list", null, {
             try {
                 val res = JSONObject(it)
@@ -35,12 +33,33 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
                     )
                 )
             } catch (e: Exception) {
+                addErrorMessage(e.message)
                 AppInstance.globalHelper.logMsg(
                     "Exception: ${e.message}",
                     GlobalHelper.Companion.LogLevelTypes.Error,
-                    "MainActivity@loadLists"
+                    "ListViewModel@getLists"
                 )
             }
-        }, {}, Request.Method.GET, true)
+        }, {
+            addErrorMessage(
+                AppInstance.globalHelper.parseErrorNetworkResponse(
+                    it,
+                    AppInstance.appContext?.resources?.getString(
+                        R.string.error_lists_loading_failed
+                    ) ?: "",
+                    "ListViewModel@getLists"
+                )
+            )
+        }, Request.Method.GET, true)
+    }
+
+    private fun addErrorMessage(msg: String?) {
+        if (msg != null)
+            errorMessage.postValue(msg)
+
+    }
+
+    fun getErrorMessages(): LiveData<String> {
+        return errorMessage
     }
 }

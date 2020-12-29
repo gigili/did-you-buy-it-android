@@ -45,10 +45,16 @@ class MainActivity : AppCompatActivity() {
         globalHelper = GlobalHelper(this@MainActivity)
         globalHelper.setupDrawerLayout(toolbar)
 
-        val viewModel = ViewModelProvider(this).get(ListViewModel::class.java)
+        val viewModel = ViewModelProvider(this@MainActivity).get(ListViewModel::class.java)
+        ProgressDialogHelper.showProgressDialog(this@MainActivity)
         viewModel.getLists().observe(this@MainActivity, {
+            ProgressDialogHelper.hideProgressDialog()
             lists.addAll(it)
             listsAdapter.notifyDataSetChanged()
+        })
+
+        viewModel.getErrorMessages().observe(this@MainActivity, {
+            globalHelper.showMessageDialog(it)
         })
 
         lstLists = findViewById(R.id.lstLists)
