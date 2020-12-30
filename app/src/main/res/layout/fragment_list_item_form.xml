@@ -7,57 +7,74 @@
     android:padding="@dimen/padding_medium">
 
     <EditText
-        android:id="@+id/edtListItemDialogName"
+        android:id="@+id/edtListItemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:autofillHints="@string/prompt_list_item_name"
         android:hint="@string/prompt_list_item_name"
-        android:inputType="text"
-        android:maxLines="3"
+        android:inputType="text|textMultiLine"
+        android:maxLines="5"
         android:selectAllOnFocus="true" />
 
     <CheckBox
-        android:id="@+id/cbListItemDialogIsRepeating"
+        android:id="@+id/cbListItemIsRepeating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtListItemDialogName"
+        android:layout_below="@id/edtListItemName"
         android:layout_centerHorizontal="true"
         android:hint="@string/prompt_repeating_item" />
 
     <Button
-        android:id="@+id/btnListItemDialogAddImage"
+        android:id="@+id/btnListItemAddImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cbListItemDialogIsRepeating"
+        android:layout_below="@id/cbListItemIsRepeating"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:text="@string/lbl_add_new_image" />
 
     <ImageView
-        android:id="@+id/imgListItemDialogPreview"
-        android:layout_width="150sp"
-        android:layout_height="150sp"
-        android:layout_below="@id/btnListItemDialogAddImage"
+        android:id="@+id/imgListItemPreview"
+        android:layout_width="250sp"
+        android:layout_height="250sp"
+        android:layout_below="@id/btnListItemAddImage"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:contentDescription="@string/lbl_list_item_image"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:visibility="gone"
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
     <ImageView
-        android:id="@+id/btnListItemDialogRemoveImage"
+        android:id="@+id/btnListItemRemoveImage"
         android:layout_width="40sp"
         android:layout_height="40sp"
-        android:layout_alignTop="@id/imgListItemDialogPreview"
-        android:layout_alignBottom="@+id/imgListItemDialogPreview"
+        android:layout_alignTop="@id/imgListItemPreview"
+        android:layout_alignBottom="@+id/imgListItemPreview"
         android:layout_gravity="center"
-        android:layout_toEndOf="@id/btnListItemDialogAddImage"
+        android:layout_toEndOf="@id/btnListItemAddImage"
         android:contentDescription="@string/lbl_remove_image"
         android:src="@drawable/ic_delete"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_below="@+id/imgListItemPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/padding_medium"
+        android:layout_marginBottom="15sp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnListItemSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@string/lbl_add_new_item_image"
+            android:src="@drawable/ic_save" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

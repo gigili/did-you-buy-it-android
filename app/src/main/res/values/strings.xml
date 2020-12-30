@@ -77,5 +77,7 @@
     <string name="lbl_add_new_image">Add new image</string>
     <string name="lbl_list_item_image">Preview of a list item image</string>
     <string name="lbl_remove_image">Remove image</string>
-    <string name="app_camera_permission_nedeed">Camera permission is required for adding new images</string>
+    <string name="app_camera_permission_needed">Camera permission is required for adding new images</string>
+    <string name="error_no_camera_found">No camera found, unable to take images</string>
+    <string name="save">Save</string>
 </resources>

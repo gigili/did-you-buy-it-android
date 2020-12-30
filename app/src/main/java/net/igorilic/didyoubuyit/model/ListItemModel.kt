@@ -1,6 +1,8 @@
 package net.igorilic.didyoubuyit.model
 
 import com.google.gson.annotations.SerializedName
+import net.igorilic.didyoubuyit.helper.AppInstance
+import net.igorilic.didyoubuyit.helper.GlobalHelper
 import org.json.JSONObject
 
 data class ListItemModel(
@@ -8,13 +10,13 @@ data class ListItemModel(
     val id: Int? = null,
 
     @field:SerializedName("name")
-    val name: String,
+    var name: String,
 
     @field:SerializedName("image")
-    val image: String? = null,
+    var image: String? = null,
 
     @field:SerializedName("is_repeating")
-    val isRepeating: String = "0",
+    var isRepeating: String = "0",
 
     @field:SerializedName("purchase_date")
     val purchaseDate: String? = null,
@@ -39,5 +41,11 @@ data class ListItemModel(
         //obj.put("isRepeating", isRepeating)
 
         return obj
+    }
+
+    fun getImageUrl(): String {
+        if (image.isNullOrEmpty()) return ""
+
+        return "${AppInstance.globalHelper.getStringPref("API_URL")}/${GlobalHelper.LIST_ITEM_IMAGE_PATH}/${image}"
     }
 }

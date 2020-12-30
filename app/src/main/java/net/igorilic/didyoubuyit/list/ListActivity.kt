@@ -2,6 +2,7 @@ package net.igorilic.didyoubuyit.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -55,6 +56,13 @@ class ListActivity : AppCompatActivity() {
                 }
             }
             false
+        }
+
+        navController.addOnDestinationChangedListener { _, nd, _ ->
+            when (nd.id) {
+                R.id.m_nav_items_form -> navView.visibility = View.GONE
+                else -> navView.visibility = View.VISIBLE
+            }
         }
 
         supportActionBar?.setBackgroundDrawable(

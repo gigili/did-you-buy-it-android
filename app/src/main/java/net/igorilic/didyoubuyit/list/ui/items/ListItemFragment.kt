@@ -1,29 +1,20 @@
 package net.igorilic.didyoubuyit.list.ui.items
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.PopupMenu
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import net.igorilic.didyoubuyit.R
-import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
@@ -33,17 +24,14 @@ import org.json.JSONObject
 
 
 class ListItemFragment : Fragment(R.layout.fragment_list_item) {
+    private lateinit var ctx: Context
+    private lateinit var globalHelper: GlobalHelper
     private lateinit var list: ListModel
     private var listItems: ArrayList<ListItemModel> = ArrayList()
     private lateinit var adapter: ListItemAdapter
-    private lateinit var globalHelper: GlobalHelper
-    private lateinit var ctx: Context
-    private var listItemDialog: AlertDialog? = null
-    private lateinit var listItemDialogView: View
-    private lateinit var newItemImage: Bitmap
     private lateinit var viewModel: ListItemViewModel
 
-    private enum class ShowType {
+    private enum class EditMode {
         New,
         Edit
     }
@@ -54,8 +42,10 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
             return
         }
 
-        globalHelper = GlobalHelper(requireContext())
         list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
+        globalHelper = GlobalHelper(requireContext())
+
+        initializeList(view)
 
         val listItemViewModelFactory = ListItemViewModelFactory(list.id!!)
         viewModel = ViewModelProvider(
@@ -64,7 +54,6 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         ).get(ListItemViewModel::class.java)
 
         viewModel.getLisItems().observe(requireActivity(), {
-            AppInstance.globalHelper.logMsg(it.toString())
             listItems.clear()
             adapter.notifyDataSetChanged()
             listItems.addAll(it)
@@ -83,119 +72,31 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
             }
         })
 
-        initializeList(view)
-
         (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
 
         val fabNewListItem = view.findViewById<FloatingActionButton>(R.id.btnAddNewListItem)
         fabNewListItem.setOnClickListener {
-            showListItemDialog(ShowType.New)
+            showListItemDialog(EditMode.New)
         }
 
         super.onViewCreated(view, savedInstanceState)
     }
 
     @SuppressLint("InflateParams")
-    private fun showListItemDialog(showType: ShowType) {
-        if (listItemDialog == null) {
-            listItemDialogView = layoutInflater.inflate(R.layout.dialog_list_item, null, false)
-            val dialogTitle: String
-            val positiveButtonText: String
-
-            when (showType) {
-                ShowType.New -> {
-                    dialogTitle = ctx.resources.getString(R.string.lbl_add_new_item)
-                    positiveButtonText = ctx.resources.getString(R.string.lbl_add_new_item)
-                }
-                ShowType.Edit -> {
-                    dialogTitle = ctx.resources.getString(R.string.lbl_edit_list_item)
-                    positiveButtonText = ctx.resources.getString(R.string.lbl_update_item)
-                }
-            }
-
-            listItemDialog = AlertDialog
-                .Builder(ctx)
-                .setTitle(dialogTitle)
-                .setView(listItemDialogView)
-                .setNegativeButton(ctx.resources.getString(R.string.no)) { it, _ ->
-                    it.dismiss()
-                }
-                .setPositiveButton(positiveButtonText) { it, _ ->
-                    //TODO: Call add/edit API endpoints
-                    it.dismiss()
-                }
-                .setCancelable(true)
-                .create()
-        }
-
-        if (!requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            listItemDialogView.findViewById<ImageView>(R.id.btnListItemDialogAddImage).visibility =
-                View.GONE
-        }
-
-        listItemDialogView.findViewById<Button>(R.id.btnListItemDialogAddImage).setOnClickListener {
-            openCamera()
-        }
-
-        listItemDialog!!.show()
-    }
-
-    private fun openCamera() {
-        val cameraPermission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        )
-
-        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE
-            )
-        } else {
-            dispatchTakePictureIntent()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+    private fun showListItemDialog(
+        editMode: EditMode,
+        item: ListItemModel? = null,
+        position: Int = -1
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            dispatchTakePictureIntent()
-        } else {
-            listItemDialogView.findViewById<Button>(R.id.btnListItemDialogAddImage).visibility =
-                View.GONE
-            globalHelper.notifyMSG(resources.getString(R.string.app_camera_permission_nedeed))
-        }
-    }
-
-    private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(
-            takePictureIntent,
-            GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE
+        val bundle = bundleOf(
+            "list" to list.toJSONString(),
+            "item" to item?.toJSON().toString(),
+            "position" to position.toString(),
+            "editMode" to editMode
         )
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE && resultCode == Activity.RESULT_OK) {
-            try {
-                newItemImage = data?.extras?.get("data") as Bitmap
-                val nh = (newItemImage.height * (512.0 / newItemImage.width))
-                val scaled = Bitmap.createScaledBitmap(newItemImage, 512, nh.toInt(), true)
-
-                val imagePreview =
-                    listItemDialogView.findViewById<ImageView>(R.id.imgListItemDialogPreview)
-                imagePreview.visibility = View.VISIBLE
-                imagePreview.setImageBitmap(scaled)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        requireActivity().findNavController(R.id.nav_host_fragment)
+            .navigate(R.id.m_nav_items_form, bundle)
     }
 
     private fun initializeList(view: View) {
@@ -233,7 +134,7 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
 
         pop.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.acListItemEdit -> showListItemDialog(ShowType.Edit)
+                R.id.acListItemEdit -> showListItemDialog(EditMode.Edit, item, position)
                 R.id.acListItemDelete -> {
                     globalHelper.showMessageDialog(
                         String.format(
@@ -252,14 +153,5 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         }
 
         pop.show()
-    }
-
-    override fun onDestroy() {
-        if (listItemDialog != null && listItemDialog!!.isShowing) {
-            listItemDialog!!.dismiss()
-            listItemDialog = null
-        }
-
-        super.onDestroy()
     }
 }

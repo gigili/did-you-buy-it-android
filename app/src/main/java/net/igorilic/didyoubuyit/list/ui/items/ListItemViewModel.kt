@@ -151,4 +151,10 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
             )
         }, Request.Method.PATCH, true)
     }
+
+    fun addEditListItem(item: ListItemModel, position: Int) {
+        val items = listItems.value
+        items?.set(position, item)
+        listItems.postValue(items)
+    }
 }

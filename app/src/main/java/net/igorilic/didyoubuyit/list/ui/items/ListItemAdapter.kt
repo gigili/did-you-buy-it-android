@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
-import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
 
 class ListItemAdapter(
@@ -42,8 +41,7 @@ class ListItemAdapter(
         if (!item.image.isNullOrEmpty()) {
             holder.imgListItemImage.visibility = View.VISIBLE
             holder.imgListItemEnlarge.visibility = View.VISIBLE
-            val imageUrl =
-                "${AppInstance.globalHelper.getStringPref("API_URL")}/${GlobalHelper.LIST_ITEM_IMAGE_PATH}/${item.image}"
+            val imageUrl = item.getImageUrl()
             Glide.with(context)
                 .asBitmap()
                 .load(imageUrl)
