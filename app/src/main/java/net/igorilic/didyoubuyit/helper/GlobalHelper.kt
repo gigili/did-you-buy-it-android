@@ -159,7 +159,9 @@ open class GlobalHelper constructor(private var context: Context) {
     }
 
     fun notifyMSG(str: String) {
-        Toast.makeText(context, str, Toast.LENGTH_LONG).show()
+        if (str.isNotEmpty()) {
+            Toast.makeText(context, str, Toast.LENGTH_LONG).show()
+        }
     }
 
     fun formatDate(

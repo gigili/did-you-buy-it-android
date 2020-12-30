@@ -9,10 +9,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.reflect.TypeToken
 import net.igorilic.didyoubuyit.databinding.ActivityMainBinding
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
@@ -21,7 +19,6 @@ import net.igorilic.didyoubuyit.list.ListActivity
 import net.igorilic.didyoubuyit.list.ListViewModel
 import net.igorilic.didyoubuyit.list.ListsAdapter
 import net.igorilic.didyoubuyit.model.ListModel
-import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {
@@ -83,40 +80,6 @@ class MainActivity : AppCompatActivity() {
         intentListActivity.putExtra("list", list.toJSONString())
         startActivity(intentListActivity)
         //finish()
-    }
-
-    private fun loadLists() {
-        ProgressDialogHelper.showProgressDialog(this@MainActivity)
-        AppInstance.app.callAPI("/list", null, {
-            try {
-                val res = JSONObject(it)
-
-                //TODO Store lists into DB
-
-                val listsListType = object : TypeToken<ArrayList<ListModel?>?>() {}.type
-                val lists: ArrayList<ListModel> = AppInstance.gson.fromJson(
-                    res.getJSONArray("data").toString(),
-                    listsListType
-                )
-            } catch (e: Exception) {
-                AppInstance.globalHelper.logMsg(
-                    "Exception: ${e.message}",
-                    GlobalHelper.Companion.LogLevelTypes.Error,
-                    "MainActivity@loadLists"
-                )
-            } finally {
-                ProgressDialogHelper.hideProgressDialog()
-            }
-        }, {
-            ProgressDialogHelper.hideProgressDialog()
-            globalHelper.showMessageDialog(
-                AppInstance.globalHelper.parseErrorNetworkResponse(
-                    it,
-                    getString(R.string.error_list_loading_failed),
-                    "MainActivity@loadLists"
-                )
-            )
-        }, Request.Method.GET, true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

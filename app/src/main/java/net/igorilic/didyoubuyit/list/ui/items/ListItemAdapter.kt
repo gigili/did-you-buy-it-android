@@ -57,10 +57,15 @@ class ListItemAdapter(
             holder.imgListItemEnlarge.setOnClickListener {
                 mListItemInterface.onListItemImageEnlarge(item, imageUrl)
             }
+        } else {
+            holder.imgListItemImage.visibility = View.GONE
+            holder.imgListItemEnlarge.visibility = View.GONE
         }
 
         if (item.isRepeating == "1") {
             holder.lblListItemRepeating.visibility = View.VISIBLE
+        } else {
+            holder.lblListItemRepeating.visibility = View.GONE
         }
 
         if (item.purchaseDate != null && item.purchasedUserID != null) {
@@ -74,7 +79,11 @@ class ListItemAdapter(
                 item.purchasedUserID!!.name
             )
             holder.cbBuyItem.isChecked = true
+        } else {
+            holder.lblListItemPurchaseInfo.visibility = View.GONE
+            holder.cbBuyItem.isChecked = false
         }
+
         setupPaintFlags(holder, item, item.purchasedUserID != null)
 
         holder.cbBuyItem.setOnClickListener {
@@ -102,18 +111,6 @@ class ListItemAdapter(
     }
 
     override fun getItemCount(): Int = values.size
-
-    fun addItems(items: ArrayList<ListItemModel>) {
-        values.addAll(items)
-    }
-
-    fun updateItem(position: Int, mItem: ListItemModel) {
-        values[position] = mItem
-    }
-
-    fun removeItem(position: Int) {
-        values.removeAt(position)
-    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val lytCardListItem: RelativeLayout = view.findViewById(R.id.lytCardListItem)
