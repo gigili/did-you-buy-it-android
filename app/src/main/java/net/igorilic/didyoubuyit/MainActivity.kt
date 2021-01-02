@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,15 +45,15 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this@MainActivity).get(ListViewModel::class.java)
         ProgressDialogHelper.showProgressDialog(this@MainActivity)
-        viewModel.getLists().observe(this@MainActivity, {
+        viewModel.getLists().observe(this@MainActivity) {
             ProgressDialogHelper.hideProgressDialog()
             lists.addAll(it)
             listsAdapter.notifyDataSetChanged()
-        })
+        }
 
-        viewModel.getErrorMessages().observe(this@MainActivity, {
+        viewModel.getErrorMessages().observe(this@MainActivity) {
             globalHelper.showMessageDialog(it)
-        })
+        }
 
         lstLists = findViewById(R.id.lstLists)
         listsAdapter = ListsAdapter(
