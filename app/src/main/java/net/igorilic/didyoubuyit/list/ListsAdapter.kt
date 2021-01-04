@@ -34,6 +34,8 @@ class ListsAdapter(
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.card_list, parent, false)
 
+        AppInstance.globalHelper.logMsg("Items: $items")
+
         return ViewHolder(itemView)
     }
 
@@ -61,6 +63,7 @@ class ListsAdapter(
     }
 
     override fun getItemCount(): Int {
+        AppInstance.globalHelper.logMsg("From cnt | Items: $items")
         return items?.size ?: 0
     }
 

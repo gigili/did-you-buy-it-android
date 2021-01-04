@@ -80,4 +80,8 @@
     <string name="app_camera_permission_needed">Camera permission is required for adding new images</string>
     <string name="error_no_camera_found">No camera found, unable to take images</string>
     <string name="save">Save</string>
+    <string name="add_new_list">Add new list</string>
+    <string name="prompt_list_name">List name</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_failed_to_create_list">Failed to create new list</string>
 </resources>

@@ -324,7 +324,8 @@ open class GlobalHelper constructor(private var context: Context) {
 
     companion object {
         const val REQUEST_CAMERA_PERMISSION_CODE: Int = 1002
-        var API_URL = "http://192.168.0.7:3030"
+        //var API_URL = "http://192.168.0.7:3030"
+        const val API_URL = "http://10.9.9.66:3030"
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
         var PROFILE_IMAGE_PATH = "images/user"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_large">
+
+    <TextView
+        android:id="@+id/lblListName"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/edtListName"
+        android:text="@string/prompt_list_name" />
+
+    <EditText
+        android:id="@+id/edtListName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/prompt_list_name"
+        android:inputType="text"
+        android:selectAllOnFocus="true" />
+
+</LinearLayout>

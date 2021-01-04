@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listsAdapter: ListsAdapter
     private var lists: ArrayList<ListModel> = ArrayList()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,15 +48,19 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this@MainActivity).get(ListViewModel::class.java)
         ProgressDialogHelper.showProgressDialog(this@MainActivity)
-        viewModel.getLists().observe(this@MainActivity) {
+        viewModel.getLists().observe(this@MainActivity, {
             ProgressDialogHelper.hideProgressDialog()
-            lists.addAll(it)
+            it.forEach { x ->
+                if(!lists.contains(x)){
+                    lists.add(x)
+                }
+            }
             listsAdapter.notifyDataSetChanged()
-        }
+        })
 
-        viewModel.getErrorMessages().observe(this@MainActivity) {
+        viewModel.getErrorMessages().observe(this@MainActivity, {
             globalHelper.showMessageDialog(it)
-        }
+        })
 
         lstLists = findViewById(R.id.lstLists)
         listsAdapter = ListsAdapter(
@@ -69,8 +76,36 @@ class MainActivity : AppCompatActivity() {
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()*/
+            var newListItemFormView: View? = layoutInflater.inflate(R.layout.dialog_list_form, null, false)
+            val ad = AlertDialog
+                .Builder(this@MainActivity)
+                .setTitle(R.string.add_new_list)
+                .setView(newListItemFormView)
+                .setNegativeButton(R.string.cancel) { it, _ ->
+                    it.dismiss()
+                }
+                .setPositiveButton(R.string.save) { it, _ ->
+                    it.dismiss()
+                    //
+                    newListItemFormView?.let{
+                        val edtListName = it.findViewById<EditText>(R.id.edtListName)
+                        viewModel.addNewList(edtListName.text.toString())
+                        Snackbar.make(
+                            view,
+                            "New list name: " + edtListName.text.toString(),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                .setCancelable(true)
+                .setOnDismissListener {
+                    newListItemFormView = null
+                }
+                .create()
+
+            ad.show()
         }
 
         //loadLists()

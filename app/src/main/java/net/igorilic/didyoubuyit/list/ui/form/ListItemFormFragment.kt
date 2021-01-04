@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
@@ -51,15 +53,19 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
             openCamera()
         }
 
-        if (item !== null) {
+        item?.let {
             view.findViewById<EditText>(R.id.edtListItemName).setText(item?.name)
             view.findViewById<CheckBox>(R.id.cbListItemIsRepeating).isChecked =
-                (item?.isRepeating == "1")
+                (it.isRepeating == "1")
 
-            if (!item?.image.isNullOrEmpty()) {
+            if (!it.image.isNullOrEmpty()) {
                 imgPreview.visibility = View.VISIBLE
-                Glide.with(requireActivity()).asBitmap().load(item?.getImageUrl()).into(imgPreview)
+                Glide.with(requireActivity()).asBitmap().load(it.getImageUrl()).into(imgPreview)
             }
+        }
+
+        view.findViewById<FloatingActionButton>(R.id.btnListItemSave).setOnClickListener {
+            Snackbar.make(view, "Trigger submit action", Snackbar.LENGTH_LONG).show()
         }
     }
 

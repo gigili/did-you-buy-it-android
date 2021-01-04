@@ -62,4 +62,21 @@ class ListViewModel : ViewModel() {
     fun getErrorMessages(): LiveData<String> {
         return errorMessage
     }
+
+    fun addNewList(listName: String) {
+        val params = JSONObject()
+        params.put("name", listName)
+        AppInstance.app.callAPI("/list", params, {
+            getAllList()
+        }, {
+            addErrorMessage(
+                AppInstance.globalHelper.parseErrorNetworkResponse(
+                    it,
+                    AppInstance.appContext?.resources?.getString(R.string.error_failed_to_create_list)
+                        ?: "",
+                    "ListViewModel@addNewList"
+                )
+            )
+        }, Request.Method.POST, true)
+    }
 }
