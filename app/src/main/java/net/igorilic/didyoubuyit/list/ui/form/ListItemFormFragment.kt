@@ -16,12 +16,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.list.ui.items.ListItemViewModel
 import net.igorilic.didyoubuyit.model.ListItemModel
 import net.igorilic.didyoubuyit.model.ListModel
 import org.json.JSONObject
@@ -32,12 +35,15 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
     private var newItemImage: Bitmap? = null
     private lateinit var btnAddNewImage: Button
     private lateinit var imgPreview: ImageView
+    private lateinit var viewModel: ListItemViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         btnAddNewImage = view.findViewById(R.id.btnListItemAddImage)
         imgPreview = view.findViewById(R.id.imgListItemPreview)
+
+        viewModel = ViewModelProvider(requireActivity()).get(ListItemViewModel::class.java)
 
         if (!requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             btnAddNewImage.visibility = View.GONE
@@ -53,9 +59,11 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
             openCamera()
         }
 
+        val cbIsRepeating = view.findViewById<CheckBox>(R.id.cbListItemIsRepeating)
+
         item?.let {
             view.findViewById<EditText>(R.id.edtListItemName).setText(item?.name)
-            view.findViewById<CheckBox>(R.id.cbListItemIsRepeating).isChecked =
+            cbIsRepeating.isChecked =
                 (it.isRepeating == "1")
 
             if (!it.image.isNullOrEmpty()) {
@@ -66,6 +74,21 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
 
         view.findViewById<FloatingActionButton>(R.id.btnListItemSave).setOnClickListener {
             Snackbar.make(view, "Trigger submit action", Snackbar.LENGTH_LONG).show()
+
+            val edtItemName = view.findViewById<EditText>(R.id.edtListItemName)
+
+            if (edtItemName.text.toString().trim().isEmpty()) {
+                edtItemName.error = context?.resources?.getString(R.string.error_value_required)
+                return@setOnClickListener
+            }
+            val isRepeating = if (cbIsRepeating.isChecked) "1" else "0"
+
+            val params = JSONObject()
+            params.put("name", edtItemName.text.toString())
+            params.put("isRepeating", isRepeating)
+
+            viewModel.addNewListItem(list.id!!, params, newItemImage)
+            requireActivity().findNavController(R.id.nav_host_fragment).navigateUp()
         }
     }
 
@@ -92,11 +115,17 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == GlobalHelper.REQUEST_CAMERA_PERMISSION_CODE) {
+
+            for (res in grantResults) {
+                if (res != PackageManager.PERMISSION_GRANTED) {
+                    btnAddNewImage.visibility = View.GONE
+                    AppInstance.globalHelper.notifyMSG(resources.getString(R.string.app_camera_permission_needed))
+                    return
+                }
+            }
+
             dispatchTakePictureIntent()
-        } else {
-            btnAddNewImage.visibility = View.GONE
-            AppInstance.globalHelper.notifyMSG(resources.getString(R.string.app_camera_permission_needed))
         }
     }
 

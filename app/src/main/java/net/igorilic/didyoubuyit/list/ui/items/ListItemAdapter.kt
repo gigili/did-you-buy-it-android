@@ -17,7 +17,7 @@ import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.model.ListItemModel
 
 class ListItemAdapter(
-    private val values: ArrayList<ListItemModel>,
+    private var values: ArrayList<ListItemModel>,
     private val context: Activity,
     private val mListItemInterface: ListItemInterface
 ) : RecyclerView.Adapter<ListItemAdapter.ViewHolder>() {
@@ -109,6 +109,10 @@ class ListItemAdapter(
     }
 
     override fun getItemCount(): Int = values.size
+
+    fun setData(data: ArrayList<ListItemModel>) {
+        values = data
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val lytCardListItem: RelativeLayout = view.findViewById(R.id.lytCardListItem)

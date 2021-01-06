@@ -2,14 +2,14 @@ package net.igorilic.didyoubuyit.helper
 
 import android.app.Application
 import android.content.Context
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import android.graphics.Bitmap
+import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONObject
+import java.nio.charset.Charset
+
 
 @Suppress("PrivatePropertyName")
 class AppInstance : Application() {
@@ -59,6 +59,64 @@ class AppInstance : Application() {
         )
 
         cancelPendingRequests()
+        addToRequestQueue(req)
+    }
+
+    fun callApiUpload(
+        method: Int,
+        operationPath: String,
+        data: JSONObject?,
+        image: Bitmap? = null,
+        listener: Response.Listener<String>,
+        errorListener: Response.ErrorListener
+    ) {
+
+        if(image == null){
+            callAPI(operationPath, data, listener, errorListener, method, true)
+            return
+        }
+
+        val url = "${globalHelper.getStringPref("API_URL")}$operationPath"
+        val req: VolleyMultipartRequest = object : VolleyMultipartRequest(
+            method, url,
+            listener,
+            errorListener
+        ) {
+            override fun getByteData(): Map<String, DataPart> {
+                val params: MutableMap<String, DataPart> = HashMap()
+                val imageName =
+                    "${globalHelper.getStringPref("user_id")}-${System.currentTimeMillis()}-${
+                        data?.optString(
+                            "listID",
+                            ""
+                        )
+                    }"
+                params["image"] = DataPart(
+                    "$imageName.png",
+                    globalHelper.getFileDataFromDrawable(image),
+                    "image/png"
+                )
+                return params
+            }
+
+            override fun getHeaders(): MutableMap<String, String> {
+                val header = HashMap<String, String>()
+                val token = globalHelper.getStringPref("access_token")
+                header["Authorization"] = "Bearer: $token"
+                return header
+            }
+
+            override fun getBody(): ByteArray? {
+                return data?.toString()?.toByteArray(Charset.defaultCharset())
+            }
+        }
+
+        req.tag = this
+        req.retryPolicy = DefaultRetryPolicy(
+            15000,
+            0,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         addToRequestQueue(req)
     }
 

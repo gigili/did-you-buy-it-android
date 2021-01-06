@@ -27,7 +27,6 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
     private lateinit var ctx: Context
     private lateinit var globalHelper: GlobalHelper
     private lateinit var list: ListModel
-    private var listItems: ArrayList<ListItemModel> = ArrayList()
     private lateinit var adapter: ListItemAdapter
     private lateinit var viewModel: ListItemViewModel
 
@@ -54,9 +53,7 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         ).get(ListItemViewModel::class.java)
 
         viewModel.getLisItems().observe(requireActivity(), {
-            listItems.clear()
-            adapter.notifyDataSetChanged()
-            listItems.addAll(it)
+            adapter.setData(it)
             adapter.notifyDataSetChanged()
         })
 
@@ -101,7 +98,7 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
 
     private fun initializeList(view: View) {
         adapter = ListItemAdapter(
-            listItems,
+            ArrayList(),
             requireActivity(),
             object : ListItemAdapter.ListItemInterface {
                 override fun onItemBoughtChangeState(

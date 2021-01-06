@@ -84,4 +84,7 @@
     <string name="prompt_list_name">List name</string>
     <string name="cancel">Cancel</string>
     <string name="error_failed_to_create_list">Failed to create new list</string>
+    <string name="lbl_new_list_created">List %1$s was created</string>
+    <string name="error_value_required">Value is required</string>
+    <string name="error_failed_to_add_list_item">Failed to add list item</string>
 </resources>

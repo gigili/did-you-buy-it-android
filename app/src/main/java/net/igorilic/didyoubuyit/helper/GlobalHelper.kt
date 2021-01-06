@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -22,6 +23,7 @@ import net.igorilic.didyoubuyit.BuildConfig
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.LogLevelTypes.*
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -322,10 +324,16 @@ open class GlobalHelper constructor(private var context: Context) {
         return errorMessage
     }
 
+    fun getFileDataFromDrawable(bitmap: Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
+    }
+
     companion object {
         const val REQUEST_CAMERA_PERMISSION_CODE: Int = 1002
-        //var API_URL = "http://192.168.0.7:3030"
-        const val API_URL = "http://10.9.9.66:3030"
+        const val API_URL = "http://192.168.0.7:3030"
+        //const val API_URL = "http://10.9.9.66:3030"
         var LOG_TAG = "dybi_tag"
         val DEFAULT_APP_LOCALE: Locale = Locale.UK
         var PROFILE_IMAGE_PATH = "images/user"

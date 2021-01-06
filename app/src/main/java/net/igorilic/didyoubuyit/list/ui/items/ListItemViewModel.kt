@@ -1,5 +1,6 @@
 package net.igorilic.didyoubuyit.list.ui.items
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -152,9 +153,25 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
         }, Request.Method.PATCH, true)
     }
 
-    fun addEditListItem(item: ListItemModel, position: Int) {
+    /*fun addEditListItem(item: ListItemModel, position: Int) {
         val items = listItems.value
         items?.set(position, item)
         listItems.postValue(items)
+    }*/
+
+    fun addNewListItem(listID: Int, params: JSONObject, newItemImage: Bitmap?) {
+        AppInstance.app.callApiUpload(Request.Method.POST,"/list/item/$listID",
+            params, newItemImage,{
+                getLisItems()
+            },{
+                setErrorMessage(
+                    AppInstance.globalHelper.parseErrorNetworkResponse(
+                        it,
+                        AppInstance.appContext?.resources?.getString(R.string.error_failed_to_add_list_item) ?: "",
+                        "ListItemViewModel@addNewListItem"
+                    )
+                )
+            }
+        )
     }
 }

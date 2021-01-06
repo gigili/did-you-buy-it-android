@@ -28,11 +28,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var globalHelper: GlobalHelper
-
     private lateinit var lstLists: RecyclerView
     private lateinit var listsAdapter: ListsAdapter
-    private var lists: ArrayList<ListModel> = ArrayList()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +47,7 @@ class MainActivity : AppCompatActivity() {
         ProgressDialogHelper.showProgressDialog(this@MainActivity)
         viewModel.getLists().observe(this@MainActivity, {
             ProgressDialogHelper.hideProgressDialog()
-            it.forEach { x ->
-                if(!lists.contains(x)){
-                    lists.add(x)
-                }
-            }
+            listsAdapter.setData(it)
             listsAdapter.notifyDataSetChanged()
         })
 
@@ -65,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         lstLists = findViewById(R.id.lstLists)
         listsAdapter = ListsAdapter(
             this@MainActivity,
-            lists,
+            ArrayList(),
             object : ListsAdapter.OnListItemClickListener {
                 override fun onItemClicked(item: ListModel) {
                     openListDetails(item)
@@ -76,8 +69,6 @@ class MainActivity : AppCompatActivity() {
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
-            /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()*/
             var newListItemFormView: View? = layoutInflater.inflate(R.layout.dialog_list_form, null, false)
             val ad = AlertDialog
                 .Builder(this@MainActivity)
@@ -94,7 +85,10 @@ class MainActivity : AppCompatActivity() {
                         viewModel.addNewList(edtListName.text.toString())
                         Snackbar.make(
                             view,
-                            "New list name: " + edtListName.text.toString(),
+                            String.format(
+                                getString(R.string.lbl_new_list_created),
+                                edtListName.text.toString()
+                            ),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }

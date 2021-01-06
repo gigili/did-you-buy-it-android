@@ -16,8 +16,11 @@ class ListViewModel : ViewModel() {
     private val lists: MutableLiveData<ArrayList<ListModel>> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
-    fun getLists(): LiveData<ArrayList<ListModel>> {
+    init {
         getAllList()
+    }
+
+    fun getLists(): LiveData<ArrayList<ListModel>> {
         return lists
     }
 
@@ -56,7 +59,6 @@ class ListViewModel : ViewModel() {
     private fun addErrorMessage(msg: String?) {
         if (msg != null)
             errorMessage.postValue(msg)
-
     }
 
     fun getErrorMessages(): LiveData<String> {
