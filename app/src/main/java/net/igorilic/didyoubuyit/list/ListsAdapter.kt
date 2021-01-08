@@ -34,8 +34,6 @@ class ListsAdapter(
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.card_list, parent, false)
 
-        AppInstance.globalHelper.logMsg("Items: $items")
-
         return ViewHolder(itemView)
     }
 

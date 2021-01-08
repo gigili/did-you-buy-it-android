@@ -87,4 +87,5 @@
     <string name="lbl_new_list_created">List %1$s was created</string>
     <string name="error_value_required">Value is required</string>
     <string name="error_failed_to_add_list_item">Failed to add list item</string>
+    <string name="list_item_add_success">List item added successfully</string>
 </resources>

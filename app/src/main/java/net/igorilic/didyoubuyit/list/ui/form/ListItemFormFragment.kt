@@ -83,9 +83,9 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
             }
             val isRepeating = if (cbIsRepeating.isChecked) "1" else "0"
 
-            val params = JSONObject()
-            params.put("name", edtItemName.text.toString())
-            params.put("isRepeating", isRepeating)
+            val params = HashMap<String, String>()
+            params["name"] = edtItemName.text.toString()
+            params["is_repeating"] = isRepeating
 
             viewModel.addNewListItem(list.id!!, params, newItemImage)
             requireActivity().findNavController(R.id.nav_host_fragment).navigateUp()

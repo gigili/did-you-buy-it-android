@@ -73,18 +73,13 @@ class ListActivity : AppCompatActivity() {
         )
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navigateUpResult = NavigationUI.navigateUp(navController, null)
-        navView.selectedItemId = R.id.bn_nav_items
-        return navigateUpResult
-    }
-
     override fun onBackPressed() {
-        if (navView.selectedItemId == R.id.bn_nav_items) {
+        if (navController.currentDestination?.id == R.id.m_nav_items) {
             finish()
-        } else {
-            onSupportNavigateUp()
+            return
         }
+        super.onBackPressed()
+        navView.selectedItemId = R.id.bn_nav_items
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -15,6 +15,7 @@ import org.json.JSONObject
 class ListItemViewModel(private val listID: Int) : ViewModel() {
     private val listItems: MutableLiveData<ArrayList<ListItemModel>> = MutableLiveData()
     private var errorMessage: MutableLiveData<String> = MutableLiveData()
+    private val notifyMessage: MutableLiveData<String> = MutableLiveData()
     private val showProgressDialog: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
@@ -62,8 +63,7 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
     }
 
     private fun setErrorMessage(msg: String?) {
-        if (!msg.isNullOrEmpty())
-            errorMessage.postValue(msg)
+        errorMessage.postValue(msg)
     }
 
     fun getErrorMessage(): LiveData<String> {
@@ -81,7 +81,7 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
             try {
                 val res = JSONObject(it)
                 if (res.optBoolean("success", false)) {
-                    AppInstance.globalHelper.notifyMSG(
+                    setNotifyMessage(
                         ctx?.resources?.getString(R.string.list_item_removed_success) ?: ""
                     )
                     val oldItems = listItems.value
@@ -89,7 +89,7 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
 
                     listItems.value = oldItems
                 } else {
-                    AppInstance.globalHelper.notifyMSG(
+                    setNotifyMessage(
                         ctx?.resources?.getString(R.string.error_deleting_list_item) ?: ""
                     )
                 }
@@ -128,6 +128,11 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
                 val items = listItems.value
                 items?.set(position, mItem)
                 listItems.postValue(items)
+
+                setNotifyMessage(
+                    AppInstance.appContext?.resources?.getString(R.string.list_item_bought_state_update_success)
+                        ?: ""
+                )
             } catch (e: java.lang.Exception) {
                 AppInstance.globalHelper.logMsg(
                     "${e.message}",
@@ -137,9 +142,6 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
                 e.printStackTrace()
             } finally {
                 showProgressDialog.postValue(false)
-                AppInstance.globalHelper.notifyMSG(
-                    ctx?.resources?.getString(R.string.list_item_bought_state_update_success) ?: ""
-                )
             }
         }, {
             showProgressDialog.postValue(false)
@@ -153,25 +155,32 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
         }, Request.Method.PATCH, true)
     }
 
-    /*fun addEditListItem(item: ListItemModel, position: Int) {
-        val items = listItems.value
-        items?.set(position, item)
-        listItems.postValue(items)
-    }*/
-
-    fun addNewListItem(listID: Int, params: JSONObject, newItemImage: Bitmap?) {
-        AppInstance.app.callApiUpload(Request.Method.POST,"/list/item/$listID",
-            params, newItemImage,{
-                getLisItems()
-            },{
+    fun addNewListItem(listID: Int, params: HashMap<String, String>, newItemImage: Bitmap?) {
+        AppInstance.app.callApiUpload(Request.Method.POST, "/list/item/$listID",
+            params, newItemImage, {
+                loadListItems()
+                setNotifyMessage(
+                    AppInstance.appContext?.resources?.getString(R.string.list_item_add_success)
+                        ?: ""
+                )
+            }, {
                 setErrorMessage(
                     AppInstance.globalHelper.parseErrorNetworkResponse(
                         it,
-                        AppInstance.appContext?.resources?.getString(R.string.error_failed_to_add_list_item) ?: "",
+                        AppInstance.appContext?.resources?.getString(R.string.error_failed_to_add_list_item)
+                            ?: "",
                         "ListItemViewModel@addNewListItem"
                     )
                 )
             }
         )
+    }
+
+    private fun setNotifyMessage(msg: String?) {
+        notifyMessage.postValue(msg)
+    }
+
+    fun getNotifyMessage(): LiveData<String> {
+        return notifyMessage
     }
 }

@@ -8,7 +8,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONObject
-import java.nio.charset.Charset
 
 
 @Suppress("PrivatePropertyName")
@@ -65,14 +64,17 @@ class AppInstance : Application() {
     fun callApiUpload(
         method: Int,
         operationPath: String,
-        data: JSONObject?,
+        data: HashMap<String, String>?,
         image: Bitmap? = null,
         listener: Response.Listener<String>,
         errorListener: Response.ErrorListener
     ) {
 
-        if(image == null){
-            callAPI(operationPath, data, listener, errorListener, method, true)
+        if (image == null) {
+            val jsParams = JSONObject()
+            jsParams.put("name", data?.get("name"))
+            jsParams.put("is_repeating", data?.get("is_repeating"))
+            callAPI(operationPath, jsParams, listener, errorListener, method, true)
             return
         }
 
@@ -85,17 +87,15 @@ class AppInstance : Application() {
             override fun getByteData(): Map<String, DataPart> {
                 val params: MutableMap<String, DataPart> = HashMap()
                 val imageName =
-                    "${globalHelper.getStringPref("user_id")}-${System.currentTimeMillis()}-${
-                        data?.optString(
-                            "listID",
-                            ""
-                        )
+                    "${globalHelper.getIntPref("user_id")}-${System.currentTimeMillis()}-${
+                        data?.get("listID")
                     }"
                 params["image"] = DataPart(
                     "$imageName.png",
                     globalHelper.getFileDataFromDrawable(image),
                     "image/png"
                 )
+
                 return params
             }
 
@@ -106,8 +106,8 @@ class AppInstance : Application() {
                 return header
             }
 
-            override fun getBody(): ByteArray? {
-                return data?.toString()?.toByteArray(Charset.defaultCharset())
+            override fun getParams(): MutableMap<String, String> {
+                return data?.toMutableMap() ?: super.getParams()
             }
         }
 

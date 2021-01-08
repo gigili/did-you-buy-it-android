@@ -14,7 +14,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
+import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
@@ -58,7 +60,9 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         })
 
         viewModel.getErrorMessage().observe(requireActivity(), {
-            globalHelper.showMessageDialog(it)
+            if (!it.isNullOrBlank()) {
+                globalHelper.showMessageDialog(it)
+            }
         })
 
         viewModel.getShowProgressDialog().observe(requireActivity(), {
@@ -66,6 +70,14 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
                 ProgressDialogHelper.showProgressDialog(requireActivity())
             } else {
                 ProgressDialogHelper.hideProgressDialog()
+            }
+        })
+
+        viewModel.getNotifyMessage().observe(requireActivity(), {
+            AppInstance.globalHelper.logMsg("Notify msg: $it")
+            if (!it.isNullOrBlank()) {
+                Snackbar.make(view.findViewById(R.id.btnAddNewListItem), it, Snackbar.LENGTH_LONG)
+                    .show()
             }
         })
 

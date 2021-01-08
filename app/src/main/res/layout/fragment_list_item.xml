@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/bottom_navigation_bar_size"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,6 @@
         android:name="net.igorilic.didyoubuyit.list.ui.ListItemFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/bottom_navigation_bar_size"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         tools:context=".list.ui.items.ListItemFragment"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/lbl_add_new_item"
-        android:layout_marginBottom="@dimen/bottom_navigation_bar_size_big"
+        android:layout_marginBottom="@dimen/padding_xlarge"
         android:layout_marginEnd="10dp"
         android:src="@drawable/ic_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
