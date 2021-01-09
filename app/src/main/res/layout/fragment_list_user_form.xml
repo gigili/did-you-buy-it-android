@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/bottom_navigation_bar_size">
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/bottom_navigation_bar_size"
+    tools:context=".list.ui.form.ListUserFormFragment">
+
+    <EditText
+        android:padding="@dimen/padding_medium"
+        android:id="@+id/edtUserFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/search_for_user"
+        android:ems="10"
+        android:hint="@string/search_for_user"
+        android:inputType="text" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lstListUsers"
-        android:name="net.igorilic.didyoubuyit.list.ui.users.ListUsersFragment"
+        android:id="@+id/lstSuggestedUsers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".list.ui.users.ListUserFragment"
+        android:layout_below="@id/edtUserFilter"
         tools:listitem="@layout/card_list_user" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnAddNewListUser"
+        android:id="@+id/btnListUserSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="@dimen/padding_xlarge"
-        android:contentDescription="@string/add_new_user_to_list"
-        android:src="@drawable/ic_add" />
+        android:contentDescription="@string/save"
+        android:src="@drawable/ic_save" />
 </RelativeLayout>

@@ -93,4 +93,7 @@
     <string name="lbl_confirm_image_deletion">Are you sure you want to remove the image? This action can not be reverted.</string>
     <string name="error_failed_to_update_list_item">Failed to updated list item</string>
     <string name="list_item_update_success">List item updated successfully</string>
+    <string name="add_new_user_to_list">Add new user to the list</string>
+    <string name="search_for_user">Search for user…</string>
+    <string name="title_2_columns">%1$s - %2$s</string>
 </resources>

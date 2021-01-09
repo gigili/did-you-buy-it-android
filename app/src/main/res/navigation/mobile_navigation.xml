@@ -9,15 +9,7 @@
         android:id="@+id/m_nav_items"
         android:name="net.igorilic.didyoubuyit.list.ui.items.ListItemFragment"
         android:label="@string/lbl_list_items"
-        tools:layout="@layout/fragment_list_item">
-        <action
-            android:id="@+id/action_m_nav_items_to_m_nav_users2"
-            app:destination="@id/m_nav_users">
-            <argument
-                android:name="list"
-                app:argType="string" />
-        </action>
-    </fragment>
+        tools:layout="@layout/fragment_list_item" />
 
     <fragment
         android:id="@+id/m_nav_users"
@@ -27,6 +19,11 @@
     <fragment
         android:id="@+id/m_nav_items_form"
         android:name="net.igorilic.didyoubuyit.list.ui.form.ListItemFormFragment"
-        android:label="fragment_list_item_form"
+        android:label="@string/lbl_edit_list_item"
         tools:layout="@layout/fragment_list_item_form" />
+    <fragment
+        android:id="@+id/m_nav_users_form"
+        android:name="net.igorilic.didyoubuyit.list.ui.form.ListUserFormFragment"
+        android:label="@string/add_new_user_to_list"
+        tools:layout="@layout/fragment_list_user_form" />
 </navigation>

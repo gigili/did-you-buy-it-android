@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -75,7 +75,11 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
             }
         })
 
-        (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
+        (activity as AppCompatActivity).supportActionBar?.title = String.format(
+            getString(R.string.title_2_columns),
+            list.name,
+            getString(R.string.lbl_list_items)
+        )
 
         val fabNewListItem = view.findViewById<FloatingActionButton>(R.id.btnAddNewListItem)
         fabNewListItem.setOnClickListener {
@@ -99,8 +103,7 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
             "editMode" to editMode
         )
 
-        requireActivity().findNavController(R.id.nav_host_fragment)
-            .navigate(R.id.m_nav_items_form, bundle)
+        findNavController().navigate(R.id.m_nav_items_form, bundle)
     }
 
     private fun initializeList(view: View) {

@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerHorizontal="true"
+    android:layout_marginBottom="@dimen/bottom_navigation_bar_size"
+    tools:context=".list.ui.form.ListItemFormFragment"
     android:padding="@dimen/padding_medium">
 
     <EditText
@@ -38,10 +40,10 @@
         android:id="@+id/imgListItemPreview"
         android:layout_width="250sp"
         android:layout_height="250sp"
-        android:layout_marginTop="@dimen/padding_large"
         android:layout_below="@id/btnListItemAddImage"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/padding_large"
         android:contentDescription="@string/lbl_list_item_image"
         android:scaleType="fitCenter"
         android:visibility="gone"
@@ -52,10 +54,10 @@
         android:id="@+id/btnListItemRemoveImage"
         android:layout_width="40sp"
         android:layout_height="40sp"
-        android:layout_marginStart="@dimen/padding_medium"
         android:layout_alignTop="@id/imgListItemPreview"
         android:layout_alignBottom="@+id/imgListItemPreview"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/padding_medium"
         android:layout_toEndOf="@id/imgListItemPreview"
         android:contentDescription="@string/lbl_remove_image"
         android:src="@drawable/ic_delete"
@@ -69,8 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/padding_medium"
-        android:layout_marginBottom="15sp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="@dimen/padding_xlarge"
         android:contentDescription="@string/lbl_add_new_item_image"
         android:src="@drawable/ic_save" />
 

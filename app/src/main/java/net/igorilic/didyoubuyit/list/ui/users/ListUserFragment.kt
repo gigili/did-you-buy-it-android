@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Request.Method.GET
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.reflect.TypeToken
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
@@ -30,7 +33,11 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
         super.onViewCreated(view, savedInstanceState)
 
         list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
-        (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
+        (activity as AppCompatActivity).supportActionBar?.title = String.format(
+            getString(R.string.title_2_columns),
+            list.name,
+            getString(R.string.lbl_list_users)
+        )
 
         if (arguments?.getString("list").isNullOrEmpty()) {
             return
@@ -60,6 +67,13 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
         val lst = view.findViewById<RecyclerView>(R.id.lstListUsers)
         lst.layoutManager = LinearLayoutManager(requireContext())
         lst.adapter = adapter
+
+        view.findViewById<FloatingActionButton>(R.id.btnAddNewListUser).setOnClickListener {
+            val bundle = bundleOf(
+                "list" to list.toJSONString()
+            )
+            findNavController().navigate(R.id.m_nav_users_form, bundle)
+        }
 
         loadListUsers()
     }
