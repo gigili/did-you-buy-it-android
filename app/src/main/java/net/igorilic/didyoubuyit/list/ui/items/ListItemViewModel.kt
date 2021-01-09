@@ -20,6 +20,8 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
 
     init {
         loadListItems()
+        setNotifyMessage("")
+        setErrorMessage("")
     }
 
     fun getLisItems(): LiveData<ArrayList<ListItemModel>> {
@@ -156,14 +158,17 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
     }
 
     fun addNewListItem(listID: Int, params: HashMap<String, String>, newItemImage: Bitmap?) {
+        showProgressDialog.postValue(true)
         AppInstance.app.callApiUpload(Request.Method.POST, "/list/item/$listID",
             params, newItemImage, {
+                showProgressDialog.postValue(false)
                 loadListItems()
                 setNotifyMessage(
                     AppInstance.appContext?.resources?.getString(R.string.list_item_add_success)
                         ?: ""
                 )
             }, {
+                showProgressDialog.postValue(false)
                 setErrorMessage(
                     AppInstance.globalHelper.parseErrorNetworkResponse(
                         it,
@@ -182,5 +187,72 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
 
     fun getNotifyMessage(): LiveData<String> {
         return notifyMessage
+    }
+
+    fun removeItemImage(listID: Int?, itemID: Int?, position: Int?) {
+        val ctx = AppInstance.appContext
+        showProgressDialog.postValue(true)
+        AppInstance.app.callAPI("/list/item/$listID/$itemID/image", null, {
+            showProgressDialog.postValue(false)
+            position?.let {
+                val items = listItems.value
+                items?.let { mItems ->
+                    val mItem = mItems[it]
+                    mItem.image = null
+                    mItems[position] = mItem
+                    listItems.postValue(mItems)
+                    setNotifyMessage(ctx?.resources?.getString(R.string.list_item_image_removed_success))
+                }
+            }
+        }, {
+            showProgressDialog.postValue(false)
+            setErrorMessage(
+                AppInstance.globalHelper.parseErrorNetworkResponse(
+                    it,
+                    ctx?.resources?.getString(R.string.error_unable_to_remove_list_item_image)
+                        ?: "",
+                    "ListItemViewModel@removeItemImage"
+                )
+            )
+        }, Request.Method.DELETE, true)
+    }
+
+    fun updateListItem(
+        listID: Int?,
+        itemID: Int?,
+        params: java.util.HashMap<String, String>,
+        newItemImage: Bitmap?,
+        position: Int?
+    ) {
+        val ctx = AppInstance.appContext
+        showProgressDialog.postValue(true)
+        AppInstance.app.callApiUpload(
+            Request.Method.PATCH,
+            "/list/item/$listID/$itemID",
+            params,
+            newItemImage, {
+                showProgressDialog.postValue(false)
+                position?.let {
+                    val items = listItems.value
+                    items?.let { mItems ->
+                        val mItem = mItems[it]
+                        mItem.name = params["name"].toString()
+                        mItem.is_repeating = params["is_repeating"].toString()
+                        mItems[position] = mItem
+                        listItems.postValue(mItems)
+                        setNotifyMessage(ctx?.resources?.getString(R.string.list_item_update_success))
+                    }
+                }
+            }, {
+                showProgressDialog.postValue(false)
+                setErrorMessage(
+                    AppInstance.globalHelper.parseErrorNetworkResponse(
+                        it,
+                        ctx?.resources?.getString(R.string.error_failed_to_update_list_item) ?: "",
+                        "ListItemViewModel@updateListItem"
+                    )
+                )
+            }
+        )
     }
 }

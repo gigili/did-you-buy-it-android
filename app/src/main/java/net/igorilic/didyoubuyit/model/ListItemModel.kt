@@ -16,7 +16,7 @@ data class ListItemModel(
     var image: String? = null,
 
     @field:SerializedName("is_repeating")
-    var isRepeating: String = "0",
+    var is_repeating: String = "0",
 
     @field:SerializedName("purchase_date")
     val purchaseDate: String? = null,
@@ -33,10 +33,11 @@ data class ListItemModel(
         val obj = JSONObject()
 
         if (id == null) return obj
+
         obj.put("id", id)
         obj.put("name", name)
         obj.put("image", image)
-        obj.put("isRepeating", isRepeating)
+        obj.put("is_repeating", is_repeating)
         obj.put("purchaseDate", purchaseDate)
         //obj.put("isRepeating", isRepeating)
 

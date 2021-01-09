@@ -60,7 +60,7 @@ class ListItemAdapter(
             holder.imgListItemEnlarge.visibility = View.GONE
         }
 
-        if (item.isRepeating == "1") {
+        if (item.is_repeating == "1") {
             holder.lblListItemRepeating.visibility = View.VISIBLE
         } else {
             holder.lblListItemRepeating.visibility = View.GONE

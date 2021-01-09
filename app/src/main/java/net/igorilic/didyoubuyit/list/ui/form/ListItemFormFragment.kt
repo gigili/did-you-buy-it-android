@@ -2,6 +2,7 @@ package net.igorilic.didyoubuyit.list.ui.form
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -24,24 +25,28 @@ import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.EditMode
 import net.igorilic.didyoubuyit.list.ui.items.ListItemViewModel
 import net.igorilic.didyoubuyit.model.ListItemModel
 import net.igorilic.didyoubuyit.model.ListModel
-import org.json.JSONObject
 
 class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
     private lateinit var list: ListModel
     private var item: ListItemModel? = null
+    private var position: Int? = null
     private var newItemImage: Bitmap? = null
     private lateinit var btnAddNewImage: Button
     private lateinit var imgPreview: ImageView
+    private lateinit var btnRemoveImage: ImageView
     private lateinit var viewModel: ListItemViewModel
+    private lateinit var editMode: EditMode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         btnAddNewImage = view.findViewById(R.id.btnListItemAddImage)
         imgPreview = view.findViewById(R.id.imgListItemPreview)
+        btnRemoveImage = view.findViewById(R.id.btnListItemRemoveImage)
 
         viewModel = ViewModelProvider(requireActivity()).get(ListItemViewModel::class.java)
 
@@ -50,9 +55,12 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
             AppInstance.globalHelper.notifyMSG(requireContext().resources.getString(R.string.error_no_camera_found))
         }
 
-        list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
+        list = AppInstance.gson.fromJson(arguments?.getString("list")!!, ListModel::class.java)
         item = AppInstance.gson.fromJson(arguments?.getString("item")!!, ListItemModel::class.java)
             ?: null
+        position = arguments?.getString("position")?.toInt()
+        editMode = arguments?.get("editMode") as EditMode
+
         (activity as AppCompatActivity).supportActionBar?.title = "${list.name}"
 
         btnAddNewImage.setOnClickListener {
@@ -63,33 +71,43 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
 
         item?.let {
             view.findViewById<EditText>(R.id.edtListItemName).setText(item?.name)
+
+            AppInstance.globalHelper.logMsg("it: $it")
             cbIsRepeating.isChecked =
-                (it.isRepeating == "1")
+                (it.is_repeating == "1")
 
             if (!it.image.isNullOrEmpty()) {
                 imgPreview.visibility = View.VISIBLE
+                btnRemoveImage.visibility = View.VISIBLE
+
                 Glide.with(requireActivity()).asBitmap().load(it.getImageUrl()).into(imgPreview)
             }
         }
 
         view.findViewById<FloatingActionButton>(R.id.btnListItemSave).setOnClickListener {
-            Snackbar.make(view, "Trigger submit action", Snackbar.LENGTH_LONG).show()
-
-            val edtItemName = view.findViewById<EditText>(R.id.edtListItemName)
-
-            if (edtItemName.text.toString().trim().isEmpty()) {
-                edtItemName.error = context?.resources?.getString(R.string.error_value_required)
-                return@setOnClickListener
-            }
-            val isRepeating = if (cbIsRepeating.isChecked) "1" else "0"
-
-            val params = HashMap<String, String>()
-            params["name"] = edtItemName.text.toString()
-            params["is_repeating"] = isRepeating
-
-            viewModel.addNewListItem(list.id!!, params, newItemImage)
-            requireActivity().findNavController(R.id.nav_host_fragment).navigateUp()
+            handleSaveButton()
         }
+
+        btnRemoveImage.setOnClickListener {
+            handleImageRemove()
+        }
+
+        viewModel.getNotifyMessage().observe(requireActivity(), {
+            if (!it.isNullOrBlank() && view.parent != null) {
+                Snackbar.make(view, it, Snackbar.LENGTH_LONG).show()
+            }
+        })
+
+        viewModel.getLisItems().observe(requireActivity(), {
+            item?.let { i ->
+                position?.let { p ->
+                    if (it[p].id == i.id && it[p].image == null) {
+                        imgPreview.visibility = View.GONE
+                        btnRemoveImage.visibility = View.GONE
+                    }
+                }
+            }
+        })
     }
 
     private fun openCamera() {
@@ -153,5 +171,43 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun handleSaveButton() {
+        val edtItemName = view?.findViewById<EditText>(R.id.edtListItemName)
+        val cbIsRepeating = view?.findViewById<CheckBox>(R.id.cbListItemIsRepeating)
+
+        if (edtItemName?.text.toString().trim().isEmpty()) {
+            edtItemName?.error = context?.resources?.getString(R.string.error_value_required)
+            return
+        }
+        val isRepeating = if (cbIsRepeating?.isChecked == true) "1" else "0"
+
+        val params = HashMap<String, String>()
+        params["name"] = edtItemName?.text.toString()
+        params["is_repeating"] = isRepeating
+
+        if (editMode == EditMode.New) {
+            viewModel.addNewListItem(list.id!!, params, newItemImage)
+        } else {
+            viewModel.updateListItem(list.id, item?.id, params, newItemImage, position)
+        }
+        requireActivity().findNavController(R.id.nav_host_fragment).navigateUp()
+    }
+
+    private fun handleImageRemove() {
+        AlertDialog
+            .Builder(requireContext())
+            .setTitle(getString(R.string.lbl_confirm_action))
+            .setMessage(getString(R.string.lbl_confirm_image_deletion))
+            .setNegativeButton(getString(R.string.no)) { dl, _ ->
+                dl.dismiss()
+            }
+            .setPositiveButton(getString(R.string.lbl_delete)) { dl, _ ->
+                viewModel.removeItemImage(list.id, item?.id, position)
+                dl.dismiss()
+            }
+            .setCancelable(true)
+            .show()
     }
 }

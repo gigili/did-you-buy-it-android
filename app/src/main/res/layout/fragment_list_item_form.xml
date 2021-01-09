@@ -38,6 +38,7 @@
         android:id="@+id/imgListItemPreview"
         android:layout_width="250sp"
         android:layout_height="250sp"
+        android:layout_marginTop="@dimen/padding_large"
         android:layout_below="@id/btnListItemAddImage"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
@@ -51,30 +52,26 @@
         android:id="@+id/btnListItemRemoveImage"
         android:layout_width="40sp"
         android:layout_height="40sp"
+        android:layout_marginStart="@dimen/padding_medium"
         android:layout_alignTop="@id/imgListItemPreview"
         android:layout_alignBottom="@+id/imgListItemPreview"
         android:layout_gravity="center"
-        android:layout_toEndOf="@id/btnListItemAddImage"
+        android:layout_toEndOf="@id/imgListItemPreview"
         android:contentDescription="@string/lbl_remove_image"
         android:src="@drawable/ic_delete"
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_below="@+id/imgListItemPreview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnListItemSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/padding_medium"
-        android:layout_marginBottom="15sp">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnListItemSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:contentDescription="@string/lbl_add_new_item_image"
-            android:src="@drawable/ic_save" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_marginBottom="15sp"
+        android:contentDescription="@string/lbl_add_new_item_image"
+        android:src="@drawable/ic_save" />
 
 </RelativeLayout>

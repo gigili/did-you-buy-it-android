@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
-import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.EditMode
 import net.igorilic.didyoubuyit.helper.ProgressDialogHelper
 import net.igorilic.didyoubuyit.model.ListItemModel
 import net.igorilic.didyoubuyit.model.ListModel
@@ -31,11 +31,6 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
     private lateinit var list: ListModel
     private lateinit var adapter: ListItemAdapter
     private lateinit var viewModel: ListItemViewModel
-
-    private enum class EditMode {
-        New,
-        Edit
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ctx = requireContext()
@@ -74,7 +69,6 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         })
 
         viewModel.getNotifyMessage().observe(requireActivity(), {
-            AppInstance.globalHelper.logMsg("Notify msg: $it")
             if (!it.isNullOrBlank()) {
                 Snackbar.make(view.findViewById(R.id.btnAddNewListItem), it, Snackbar.LENGTH_LONG)
                     .show()
@@ -97,6 +91,7 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         item: ListItemModel? = null,
         position: Int = -1
     ) {
+
         val bundle = bundleOf(
             "list" to list.toJSONString(),
             "item" to item?.toJSON().toString(),

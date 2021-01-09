@@ -351,5 +351,10 @@ open class GlobalHelper constructor(private var context: Context) {
             Warning,
             Error
         }
+
+        enum class EditMode {
+            New,
+            Edit
+        }
     }
 }
