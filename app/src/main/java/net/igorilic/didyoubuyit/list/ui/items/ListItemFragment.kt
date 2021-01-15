@@ -95,7 +95,6 @@ class ListItemFragment : Fragment(R.layout.fragment_list_item) {
         item: ListItemModel? = null,
         position: Int = -1
     ) {
-
         val bundle = bundleOf(
             "list" to list.toJSONString(),
             "item" to item?.toJSON().toString(),

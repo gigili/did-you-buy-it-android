@@ -9,13 +9,14 @@ import com.google.gson.reflect.TypeToken
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
+import net.igorilic.didyoubuyit.helper.SingleLiveEvent
 import net.igorilic.didyoubuyit.model.ListItemModel
 import org.json.JSONObject
 
 class ListItemViewModel(private val listID: Int) : ViewModel() {
     private val listItems: MutableLiveData<ArrayList<ListItemModel>> = MutableLiveData()
-    private var errorMessage: MutableLiveData<String> = MutableLiveData()
-    private val notifyMessage: MutableLiveData<String> = MutableLiveData()
+    private var errorMessage: SingleLiveEvent<String> = SingleLiveEvent()
+    private val notifyMessage: SingleLiveEvent<String> = SingleLiveEvent()
     private val showProgressDialog: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
@@ -68,7 +69,7 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
         errorMessage.postValue(msg)
     }
 
-    fun getErrorMessage(): LiveData<String> {
+    fun getErrorMessage(): SingleLiveEvent<String> {
         return errorMessage
     }
 
@@ -185,7 +186,7 @@ class ListItemViewModel(private val listID: Int) : ViewModel() {
         notifyMessage.postValue(msg)
     }
 
-    fun getNotifyMessage(): LiveData<String> {
+    fun getNotifyMessage(): SingleLiveEvent<String> {
         return notifyMessage
     }
 

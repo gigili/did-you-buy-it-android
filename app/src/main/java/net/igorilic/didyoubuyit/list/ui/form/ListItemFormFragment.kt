@@ -56,13 +56,7 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
         }
 
         list = AppInstance.gson.fromJson(arguments?.getString("list")!!, ListModel::class.java)
-        item = if (arguments?.getString("item") !== null && arguments?.getString("item")
-                .equals("null")
-        ) {
-            AppInstance.gson.fromJson(arguments?.getString("item")!!, ListItemModel::class.java)
-        } else {
-            null
-        }
+        item = AppInstance.gson.fromJson(arguments?.getString("item")!!, ListItemModel::class.java)
 
         position = arguments?.getString("position")?.toInt()
         editMode = arguments?.get("editMode") as EditMode
@@ -192,6 +186,9 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
         val params = HashMap<String, String>()
         params["name"] = edtItemName?.text.toString()
         params["is_repeating"] = isRepeating
+
+        viewModel.getNotifyMessage().removeObservers(requireActivity())
+        viewModel.getLisItems().removeObservers(requireActivity())
 
         if (editMode == EditMode.New) {
             viewModel.addNewListItem(list.id!!, params, newItemImage)

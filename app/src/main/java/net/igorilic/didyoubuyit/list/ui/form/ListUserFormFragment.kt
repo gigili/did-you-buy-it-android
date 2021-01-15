@@ -12,6 +12,8 @@ class ListUserFormFragment : Fragment(R.layout.fragment_list_user_form) {
     private lateinit var list: ListModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         list = AppInstance.gson.fromJson(arguments?.getString("list")!!, ListModel::class.java)
         (activity as AppCompatActivity).supportActionBar?.title =
             getString(R.string.add_new_user_to_list)
