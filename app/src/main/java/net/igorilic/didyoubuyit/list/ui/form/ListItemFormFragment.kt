@@ -18,7 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -195,7 +195,7 @@ class ListItemFormFragment : Fragment(R.layout.fragment_list_item_form) {
         } else {
             viewModel.updateListItem(list.id, item?.id, params, newItemImage, position)
         }
-        requireActivity().findNavController(R.id.nav_host_fragment).navigateUp()
+        findNavController().navigateUp()
     }
 
     private fun handleImageRemove() {

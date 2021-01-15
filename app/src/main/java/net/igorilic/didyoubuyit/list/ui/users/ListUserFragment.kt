@@ -7,13 +7,13 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
-import com.android.volley.Request.Method.GET
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.reflect.TypeToken
+import com.google.android.material.snackbar.Snackbar
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.AppInstance
 import net.igorilic.didyoubuyit.helper.GlobalHelper
@@ -28,6 +28,7 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
     private lateinit var users: ArrayList<UserModel>
     private lateinit var globalHelper: GlobalHelper
     private lateinit var adapter: ListUserAdapter
+    private lateinit var viewModel: ListUserViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,12 +44,18 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
             return
         }
 
+        val listUserViewModelFactory = ListUserViewModelFactory(list.id!!)
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            listUserViewModelFactory
+        ).get(ListUserViewModel::class.java)
+
         globalHelper = GlobalHelper(requireContext())
 
         users = ArrayList()
         adapter = ListUserAdapter(
             requireContext(),
-            users,
+            ArrayList(),
             list,
             object : ListUserAdapter.ListUserAdapterInterface {
                 override fun onLongItemClick(view: View, item: UserModel, position: Int) {
@@ -75,42 +82,35 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
             findNavController().navigate(R.id.m_nav_users_form, bundle)
         }
 
-        loadListUsers()
+        setupObservers(view, adapter)
     }
 
-    private fun loadListUsers() {
-        ProgressDialogHelper.showProgressDialog(requireActivity())
-        AppInstance.app.callAPI("/list/${list.id}/users", null, {
-            try {
-                val res = JSONObject(it)
-                val data = res.getJSONArray("data")
-                val listItemsType = object : TypeToken<ArrayList<UserModel?>?>() {}.type
-                val items: ArrayList<UserModel> = AppInstance.gson.fromJson(
-                    data.toString(),
-                    listItemsType
-                )
+    private fun setupObservers(view: View, adapter: ListUserAdapter) {
+        viewModel.getErrorMessage().observe(requireActivity(), {
+            if (!it.isNullOrBlank()) {
+                globalHelper.showMessageDialog(it)
+            }
+        })
 
-                adapter.addItems(items)
-                adapter.notifyDataSetChanged()
-            } catch (e: Exception) {
-                globalHelper.logMsg(
-                    e.message ?: "Error parsing users info",
-                    GlobalHelper.Companion.LogLevelTypes.Error,
-                    "ListUserFragment@loadListUser"
-                )
-            } finally {
+        viewModel.getShowProgressDialog().observe(requireActivity(), {
+            if (it) {
+                ProgressDialogHelper.showProgressDialog(requireActivity())
+            } else {
                 ProgressDialogHelper.hideProgressDialog()
             }
-        }, {
-            ProgressDialogHelper.hideProgressDialog()
-            globalHelper.showMessageDialog(
-                globalHelper.parseErrorNetworkResponse(
-                    it,
-                    requireContext().resources.getString(R.string.error_list_users_failed_to_load),
-                    "ListUserFragment@loadListusers"
-                )
-            )
-        }, GET, true)
+        })
+
+        viewModel.getNotifyMessage().observe(requireActivity(), {
+            if (!it.isNullOrBlank()) {
+                Snackbar.make(view.findViewById(R.id.btnAddNewListUser), it, Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        })
+
+        viewModel.getListUsers().observe(requireActivity(), {
+            adapter.setData(it)
+            adapter.notifyDataSetChanged()
+        })
     }
 
     private fun showContextMenu(view: View, position: Int, item: UserModel) {

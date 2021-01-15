@@ -18,7 +18,7 @@ import net.igorilic.didyoubuyit.model.UserModel
 
 class ListUserAdapter(
     private val context: Context,
-    private val values: ArrayList<UserModel>,
+    private var values: ArrayList<UserModel>,
     private val list: ListModel,
     private val mInterface: ListUserAdapterInterface
 ) : RecyclerView.Adapter<ListUserAdapter.ViewHolder>() {
@@ -78,6 +78,10 @@ class ListUserAdapter(
 
     fun removeItem(position: Int) {
         values.removeAt(position)
+    }
+
+    fun setData(data: java.util.ArrayList<UserModel>) {
+        values = data
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
