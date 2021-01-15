@@ -21,7 +21,7 @@ class ListUserAdapter(
     private val list: ListModel,
     private val mInterface: ListUserAdapterInterface
 ) : RecyclerView.Adapter<ListUserAdapter.ViewHolder>() {
-    private var values = ArrayList<UserModel>()
+    private val values = ArrayList<UserModel>()
 
     interface ListUserAdapterInterface {
         fun onLongItemClick(view: View, item: UserModel, position: Int)
@@ -81,7 +81,8 @@ class ListUserAdapter(
     }
 
     fun setData(data: java.util.ArrayList<UserModel>) {
-        values = data
+        values.clear()
+        values.addAll(data)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
