@@ -72,10 +72,6 @@ class ListUserAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    fun addItems(items: java.util.ArrayList<UserModel>) {
-        values.addAll(items)
-    }
-
     fun removeItem(position: Int) {
         values.removeAt(position)
     }
