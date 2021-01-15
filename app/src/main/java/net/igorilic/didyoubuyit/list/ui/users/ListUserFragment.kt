@@ -55,7 +55,6 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
         users = ArrayList()
         adapter = ListUserAdapter(
             requireContext(),
-            ArrayList(),
             list,
             object : ListUserAdapter.ListUserAdapterInterface {
                 override fun onLongItemClick(view: View, item: UserModel, position: Int) {

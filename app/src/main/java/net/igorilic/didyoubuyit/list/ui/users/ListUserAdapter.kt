@@ -18,10 +18,10 @@ import net.igorilic.didyoubuyit.model.UserModel
 
 class ListUserAdapter(
     private val context: Context,
-    private var values: ArrayList<UserModel>,
     private val list: ListModel,
     private val mInterface: ListUserAdapterInterface
 ) : RecyclerView.Adapter<ListUserAdapter.ViewHolder>() {
+    private var values = ArrayList<UserModel>()
 
     interface ListUserAdapterInterface {
         fun onLongItemClick(view: View, item: UserModel, position: Int)
