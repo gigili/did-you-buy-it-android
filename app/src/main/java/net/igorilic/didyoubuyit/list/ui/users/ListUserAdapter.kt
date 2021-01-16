@@ -19,13 +19,15 @@ import net.igorilic.didyoubuyit.model.UserModel
 class ListUserAdapter(
     private val context: Context,
     private val list: ListModel,
-    private val mInterface: ListUserAdapterInterface
+    private val mInterface: ListUserAdapterInterface,
+    private val usedForFilter: Boolean = false
 ) : RecyclerView.Adapter<ListUserAdapter.ViewHolder>() {
     private val values = ArrayList<UserModel>()
 
     interface ListUserAdapterInterface {
         fun onLongItemClick(view: View, item: UserModel, position: Int)
         fun onListUserImageEnlarge(user: UserModel, imageUrl: String)
+        fun onItemClick(item: UserModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +40,7 @@ class ListUserAdapter(
         val item = values[position]
 
         holder.lblListUserName.text = item.name
-        holder.lblListUserEmail.text = item.email
+        holder.lblListUserEmail.text = if (usedForFilter) item.username else item.email
 
         if (!item.image.isNullOrEmpty()) {
             val imageUrl =
@@ -58,15 +60,25 @@ class ListUserAdapter(
             holder.imgListUserEnlarge.setOnClickListener {
                 mInterface.onListUserImageEnlarge(item, imageUrl)
             }
+        } else {
+            holder.imgListUserImage.visibility = View.GONE
+            holder.imgListUserEnlarge.visibility = View.GONE
         }
 
         if (list.userID == item.id) {
             holder.lblListUserInfo.visibility = View.VISIBLE
+        } else {
+            holder.lblListUserInfo.visibility = View.GONE
         }
 
         holder.lytCardListUser.setOnLongClickListener {
             mInterface.onLongItemClick(it, item, position)
             true
+        }
+
+        holder.lytCardListUser.setOnClickListener {
+            AppInstance.globalHelper.logMsg("onClick triggered")
+            mInterface.onItemClick(item)
         }
     }
 

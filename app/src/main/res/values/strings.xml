@@ -96,4 +96,7 @@
     <string name="add_new_user_to_list">Add new user to the list</string>
     <string name="search_for_user">Search for user…</string>
     <string name="title_2_columns">%1$s - %2$s</string>
+    <string name="error_loading_users">Error loading users</string>
+    <string name="lbl_confirm_add_user_to_list">Are you sure you want to add user %1$s to the list?</string>
+    <string name="error_adding_user_to_list">There was an error trying to add new user to the list</string>
 </resources>

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/acListUserEdit"
-        android:title="@string/lbl_edit" />
-
-    <item
         android:id="@+id/acListUserDelete"
         android:title="@string/lbl_delete" />
 </menu>

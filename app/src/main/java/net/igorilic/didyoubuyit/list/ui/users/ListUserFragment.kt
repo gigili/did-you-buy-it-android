@@ -33,6 +33,10 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (arguments?.getString("list").isNullOrEmpty()) {
+            return
+        }
+
         list = ListModel.fromJSON(JSONObject(arguments?.getString("list")!!))
         (activity as AppCompatActivity).supportActionBar?.title = String.format(
             getString(R.string.title_2_columns),
@@ -40,8 +44,8 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
             getString(R.string.lbl_list_users)
         )
 
-        if (arguments?.getString("list").isNullOrEmpty()) {
-            return
+        if (list.userID != AppInstance.globalHelper.getIntPref("user_id")) {
+            view.findViewById<FloatingActionButton>(R.id.btnAddNewListUser).visibility = View.GONE
         }
 
         val listUserViewModelFactory = ListUserViewModelFactory(list.id!!)
@@ -68,6 +72,8 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
                     fullScreenImage.putExtra("imageUrl", imageUrl)
                     startActivity(fullScreenImage)
                 }
+
+                override fun onItemClick(item: UserModel) {}
             })
 
         val lst = view.findViewById<RecyclerView>(R.id.lstListUsers)
@@ -118,7 +124,6 @@ class ListUserFragment : Fragment(R.layout.fragment_list_user) {
 
         pop.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.acListUserEdit -> AppInstance.globalHelper.notifyMSG("Edit item: ${item.name}")
                 R.id.acListUserDelete -> {
                     globalHelper.showMessageDialog(
                         String.format(
