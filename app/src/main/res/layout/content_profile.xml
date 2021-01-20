@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="#000"
+    tools:context=".profile.ProfileActivity"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/vProfileBackground"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/profile_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgProfileImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/circular"
+        android:contentDescription="@string/alt_user_profile_image"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher_round"
+        app:layout_constraintBottom_toBottomOf="@+id/vProfileBackground"
+        app:layout_constraintEnd_toEndOf="@+id/vProfileBackground"
+        app:layout_constraintStart_toStartOf="@+id/vProfileBackground"
+        app:layout_constraintTop_toTopOf="@+id/vProfileBackground" />
+
+    <TextView
+        android:id="@+id/lblUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vProfileBackground"
+        app:layout_constraintTop_toBottomOf="@+id/imgProfileImage"
+        tools:text="TESTER TEST" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="3sp"
+        android:background="@color/action_bar_color"
+        app:layout_constraintBottom_toBottomOf="@+id/lblUserName"
+        app:layout_constraintEnd_toEndOf="@+id/lblUserName"
+        app:layout_constraintStart_toStartOf="@+id/lblUserName"
+        app:layout_constraintTop_toBottomOf="@+id/lblUserName"
+        tools:ignore="SmallSp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

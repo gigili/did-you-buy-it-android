@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.widget.ImageView
@@ -20,8 +21,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.navigation.NavigationView
 import net.igorilic.didyoubuyit.BuildConfig
+import net.igorilic.didyoubuyit.MainActivity
 import net.igorilic.didyoubuyit.R
 import net.igorilic.didyoubuyit.helper.GlobalHelper.Companion.LogLevelTypes.*
+import net.igorilic.didyoubuyit.profile.ProfileActivity
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
@@ -203,9 +206,26 @@ open class GlobalHelper constructor(private var context: Context) {
     }
 
     private fun handleNavigationDrawerItemClick(id: Int) {
+        val currentClass = context.javaClass.simpleName
         when (id) {
+            R.id.nav_home -> {
+                if (currentClass != "MainActivity") {
+                    val intent = Intent(context, MainActivity::class.java)
+                    (context as Activity).startActivity(intent)
+                    (context as Activity).finish()
+                }
+            }
+
             R.id.nav_exit -> {
                 this.quitApp(false)
+            }
+
+            R.id.nav_profile -> {
+                if (currentClass != "ProfileActivity") {
+                    val intent = Intent(context, ProfileActivity::class.java)
+                    (context as Activity).startActivity(intent)
+                    (context as Activity).finish()
+                }
             }
         }
     }
