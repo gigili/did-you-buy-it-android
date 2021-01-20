@@ -7,6 +7,7 @@ import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
+import net.igorilic.didyoubuyit.R
 import org.json.JSONObject
 
 
@@ -28,7 +29,7 @@ class AppInstance : Application() {
         successListener: Response.Listener<String>,
         errorListener: Response.ErrorListener,
         method: Int,
-        protectedRoute: Boolean = false
+        protectedRoute: Boolean = false,
     ) {
         val url = "${globalHelper.getStringPref("API_URL")}$operationPath"
 
@@ -57,8 +58,76 @@ class AppInstance : Application() {
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
 
+        if (protectedRoute) {
+            globalHelper.logMsg("VALIDATING TOKEN")
+            validateToken(req, errorListener)
+        } else {
+            cancelPendingRequests()
+            addToRequestQueue(req)
+        }
+    }
+
+    private fun validateToken(req: StringRequest, errorListener: Response.ErrorListener) {
+        val now = System.currentTimeMillis() / 1000
+        val tokenTime = globalHelper.getLongPref("token_expires")
+
+        var isTokenValid = true
+        if (tokenTime == -1L) isTokenValid = false //Token expiry time not set
+        if (tokenTime < now) isTokenValid = false //Token has expired
+
+        if (isTokenValid) {
+            cancelPendingRequests()
+            addToRequestQueue(req)
+            return
+        }
+
+        val url = "${globalHelper.getStringPref("API_URL")}/refresh"
+        val reqRefreshToken =
+            object : StringRequest(Method.POST, url, {
+                try {
+                    val res = JSONObject(it)
+                    if (res.optBoolean("success", false)) {
+                        val data = res.optJSONObject("data")
+                        data?.let { dt ->
+                            val token = dt.optString("access_token", "")
+
+                            if (token.isNotEmpty()) {
+                                globalHelper.setStringPref("access_token", token)
+                                globalHelper.setLongPref(
+                                    "token_expires",
+                                    data.optLong("expires", -1L)
+                                )
+
+                                cancelPendingRequests()
+                                addToRequestQueue(req)
+                            } else {
+                                globalHelper.showMessageDialog(
+                                    appContext?.getString(R.string.error_token_expired) ?: ""
+                                )
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }, errorListener) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val header = HashMap<String, String>()
+                    header["Content-Type"] = "application/json"
+                    val token = globalHelper.getStringPref("refresh_token")
+                    header["Authorization"] = "Bearer: $token"
+                    return header
+                }
+            }
+
+        reqRefreshToken.retryPolicy = DefaultRetryPolicy(
+            15000,
+            0,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+
         cancelPendingRequests()
-        addToRequestQueue(req)
+        addToRequestQueue(reqRefreshToken)
     }
 
     fun callApiUpload(
