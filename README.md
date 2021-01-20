@@ -6,4 +6,4 @@
 ![Forks badge](https://img.shields.io/github/forks/gigili/did-you-buy-it-android?style=for-the-badge)
 ![Stars badge](https://img.shields.io/github/stars/gigili/did-you-buy-it-android?style=for-the-badge)
 
-"Did you buy it?" is a shopping list app designed to help people keep track of stuff they need to buy.
+"Did You Buy It?" is a shopping list app designed to help people keep track of stuff they need to buy.
